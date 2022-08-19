@@ -1,6 +1,6 @@
 {
-	"appId": "io.ionic.starter",
-	"appName": "baby-clock",
+	"appId": "baby-clock",
+	"appName": "Baby Clock",
 	"webDir": "www",
 	"bundledWebRuntime": false
 }
