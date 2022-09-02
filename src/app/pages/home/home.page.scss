@@ -1,0 +1,36 @@
+ion-content {
+  --background: url(/assets/backgrounds/wp-inicio.jpeg) no-repeat center/cover;
+}
+.bg-transparent {
+  background: transparent;
+}
+.user-name {
+  background-color: #ffffff;
+  color: #000;
+  border-radius: 5px;
+  border: 1px solid black;
+  box-shadow: inset 4px 4px 0px 0px;
+}
+.btn {
+  color: #000;
+  border-radius: 50px;
+  border: 1px solid #000;
+}
+.btn-lactancia {
+  background-color: #d4f3cd !important;
+}
+.btn-cambio {
+  background-color: #a5c5de !important;
+}
+.btn-juego {
+  background-color: #b9aaed !important;
+}
+.btn-banio {
+  background-color: #f1edc1 !important;
+}
+.btn-congelado {
+  background-color: #b2e6d9 !important;
+}
+.btn-suenio {
+  background-color: #c2d8e5 !important;
+}
