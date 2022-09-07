@@ -1,0 +1,67 @@
+<ion-header mode="ios">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Lactancia</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="body">
+  <ion-list class="bg-transparent">
+    <ion-grid>
+      <ion-row
+        class="ion-text-center ion-align-items-center ion-justify-content-center"
+      >
+        <ion-col size="10">
+          <ion-accordion-group mode="ios">
+            <ion-accordion value="first">
+              <ion-item slot="header" color="light">
+                <ion-label>Pecho Izquierdo</ion-label>
+              </ion-item>
+              <ng-container *ngIf="pechoIzq.length > 0; else limpio">
+                <div
+                  *ngFor="let time of pechoIzq"
+                  class="ion-padding"
+                  slot="content"
+                >
+                  {{time}}
+                </div>
+              </ng-container>
+            </ion-accordion>
+          </ion-accordion-group>
+        </ion-col>
+      </ion-row>
+      <ion-row
+        class="ion-text-center ion-align-items-center ion-justify-content-center"
+      >
+        <ion-col size="10">
+          <ion-accordion-group mode="ios">
+            <ion-accordion value="first">
+              <ion-item slot="header" color="light">
+                <ion-label>Pecho Derecho</ion-label>
+              </ion-item>
+              <ng-container *ngIf="pechoDer.length > 0; else limpio">
+                <div
+                  *ngFor="let time of pechoDer"
+                  class="ion-padding"
+                  slot="content"
+                >
+                  {{time}}
+                </div>
+              </ng-container>
+            </ion-accordion>
+          </ion-accordion-group>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-list>
+  <ion-fab vertical="bottom" horizontal="center">
+    <ion-fab-button color="dark" class="btn-fav" (click)="btnAddLactancia()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+<ng-template #limpio>
+  <div class="ion-padding" slot="content">SIN REGISTRO</div>
+</ng-template>

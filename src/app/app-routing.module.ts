@@ -8,6 +8,10 @@ const routes: Routes = [
       import('./pages/home/home.module').then((m) => m.HomePageModule),
   },
   {
+    path: 'lactancia',
+    loadChildren: () => import('./pages/lactancia/lactancia.module').then( m => m.LactanciaPageModule)
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',

@@ -13,7 +13,7 @@ export class LocalStorageService {
   async setInLocalStorage(key: string, value: any): Promise<any> {
     await this.storageGlobal.set(key, value);
   }
-  async getFromLocalStorage(key: string): Promise<any> {
+  async getFromLocalStorage(key: string): Promise<string> {
     return await this.storageGlobal.get(key);
   }
   async removeFromLocalStorage(key: string): Promise<any> {
