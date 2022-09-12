@@ -37,7 +37,7 @@ export class LactanciaPage {
     return this.ultimoPecho === (pecho as unknown as PechoModel);
   }
   async btnDeleteHorario(pecho: string, index: number): Promise<void> {
-    const estaSeguro = await this.alertasSvc.handlerConfirm({
+    const estaSeguro = await this.alertasSvc.handlerConfirmAlert({
       message: '¿Seguro que desea eliminarlo?',
     });
     if (estaSeguro) {
@@ -154,7 +154,6 @@ export class LactanciaPage {
     this.lsSvc.setInLocalStorage(this.arrPechoOption[2], pecho).then(() => {
       this.alertasSvc.handlerMessages({
         message: 'Guardado',
-        icon: 'checkmark-circle-outline',
         color: 'success',
       });
       this.getInfoGeneral();
@@ -165,7 +164,6 @@ export class LactanciaPage {
     this.alertasSvc.handlerMessages({
       message: 'Eliminado',
       color: 'danger',
-      icon: 'trash-outline',
     });
   }
   private deleteLS(): void {

@@ -9,9 +9,16 @@ export class AlertasService {
     private readonly alertController: AlertController,
     private readonly toastController: ToastController
   ) {}
-  public async handlerMessages({ message, icon, color }): Promise<void> {
+  public async handlerMessages({ message, color }): Promise<void> {
+    let icon: string;
+    if (color === 'success') {
+      icon = 'checkmark-circle-outline';
+    } else if (color === 'danger') {
+      icon = 'trash-outline';
+    }
+
     const toast = await this.toastController.create({
-      header: 'Información',
+      header: '¡Información!',
       position: 'bottom',
       duration: 1500,
       mode: 'ios',
@@ -22,21 +29,31 @@ export class AlertasService {
 
     await toast.present();
   }
-  public async handlerConfirm({ message = '' }): Promise<boolean> {
+  public async handlerConfirmAlert({
+    message,
+    btnCancelar = true,
+  }): Promise<boolean> {
+    let header = 'Información';
+    const buttons = [];
+
+    if (btnCancelar) {
+      header = 'Confirmación';
+      buttons.push({
+        text: 'Cancelar',
+        role: 'destructive',
+      });
+    }
+
+    buttons.push({
+      text: 'OK',
+      role: 'confirm',
+    });
+
     const alert = await this.alertController.create({
-      header: 'Confirmacion!',
-      message,
       mode: 'ios',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'destructive',
-        },
-        {
-          text: 'OK',
-          role: 'confirm',
-        },
-      ],
+      header,
+      message,
+      buttons,
     });
 
     await alert.present();

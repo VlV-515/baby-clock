@@ -16,6 +16,10 @@ const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full',
   },
+  {
+    path: 'aseo',
+    loadChildren: () => import('./pages/aseo/aseo.module').then( m => m.AseoPageModule)
+  },
 ];
 
 @NgModule({
