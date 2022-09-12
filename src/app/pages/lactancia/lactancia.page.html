@@ -13,9 +13,12 @@
       <ion-row
         class="ion-text-center ion-align-items-center ion-justify-content-center"
       >
-        <ion-col size="10">
+        <ion-col
+          size="10"
+          [ngClass]="{'ultimo-pecho':isUltimoPecho('lactanciaPechoIzquierdo')}"
+        >
           <ion-accordion-group mode="ios">
-            <ion-accordion value="first">
+            <ion-accordion value="first" class="select-pecho">
               <ion-item slot="header" color="light">
                 <ion-label>Pecho Izquierdo</ion-label>
               </ion-item>
@@ -35,9 +38,12 @@
       <ion-row
         class="ion-text-center ion-align-items-center ion-justify-content-center"
       >
-        <ion-col size="10">
+        <ion-col
+          size="10"
+          [ngClass]="{'ultimo-pecho':isUltimoPecho('lactanciaPechoDerecho')}"
+        >
           <ion-accordion-group mode="ios">
-            <ion-accordion value="first">
+            <ion-accordion value="first" class="select-pecho">
               <ion-item slot="header" color="light">
                 <ion-label>Pecho Derecho</ion-label>
               </ion-item>

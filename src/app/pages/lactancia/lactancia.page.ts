@@ -1,4 +1,4 @@
-import { LactanciaModel } from './interfaces/lactancia.interface';
+import { LactanciaModel, PechoModel } from './interfaces/lactancia.interface';
 import { Component } from '@angular/core';
 import { AlertController, ToastController } from '@ionic/angular';
 import { LocalStorageService } from './../../shared/services/local-storage.service';
@@ -12,9 +12,11 @@ export class LactanciaPage {
   arrPechoOption: string[] = [
     'lactanciaPechoIzquierdo',
     'lactanciaPechoDerecho',
+    'LactanciaUltimoPecho',
   ];
   pechoIzq: any[] = [];
   pechoDer: any[] = [];
+  ultimoPecho: PechoModel = null;
   constructor(
     private readonly lsSvc: LocalStorageService,
     private readonly alertController: AlertController,
@@ -23,17 +25,21 @@ export class LactanciaPage {
 
   ionViewWillEnter() {
     //this.deleteLS();
-    this.getInfoPechos();
+    this.getInfoGeneral();
   }
 
   //! PUBLICAS
   btnAddLactancia(): void {
     this.seleccionarPecho();
   }
+  isUltimoPecho(pecho: string): boolean {
+    return this.ultimoPecho === (pecho as unknown as PechoModel);
+  }
   //! PRIVADAS
-  private getInfoPechos(): void {
+  private getInfoGeneral(): void {
     this.getInfoPechoIzq();
     this.getInfoPechoDer();
+    this.getInfoUltimoPecho();
   }
   private getInfoPechoIzq(): void {
     this.lsSvc.getFromLocalStorage(this.arrPechoOption[0]).then((resIzq) => {
@@ -47,6 +53,11 @@ export class LactanciaPage {
       this.pechoDer = JSON.parse(resDer) || [];
       //console.log({ resDer });
       //console.log({ pechoDer: this.pechoDer });
+    });
+  }
+  private getInfoUltimoPecho(): void {
+    this.lsSvc.getFromLocalStorage(this.arrPechoOption[2]).then((res) => {
+      this.ultimoPecho = (res as unknown as PechoModel) || null;
     });
   }
   private async seleccionarPecho(): Promise<void> {
@@ -83,7 +94,6 @@ export class LactanciaPage {
     });
     await alert.present();
   }
-
   private async seleccionaHora(pecho: LactanciaModel): Promise<void> {
     const today = new Date();
     const time = today.getHours() + ':' + today.getMinutes();
@@ -115,31 +125,33 @@ export class LactanciaPage {
   }
   private guardarLactancia(pecho: LactanciaModel, hora: string): void {
     if (pecho.value === this.arrPechoOption[0]) {
-      this.lsSvc
-        .setInLocalStorage(
-          pecho.value,
-          JSON.stringify([hora, ...this.pechoIzq])
-        )
-        .then((res) => {
-          this.handlerSuccess('Guardado');
-          this.getInfoPechoIzq();
-        });
+      this.saveLSLactancia(pecho, hora, this.pechoIzq);
       return;
     }
+    this.saveLSLactancia(pecho, hora, this.pechoDer);
+  }
+  private saveLSLactancia(
+    pecho: LactanciaModel,
+    hora: string,
+    arrayPechos: string[]
+  ): void {
     this.lsSvc
-      .setInLocalStorage(pecho.value, JSON.stringify([hora, ...this.pechoDer]))
-      .then((res) => {
-        this.handlerSuccess('Guardado');
-        this.getInfoPechoDer();
-      });
+      .setInLocalStorage(pecho.value, JSON.stringify([hora, ...arrayPechos]))
+      .then((res) => this.guardarUltimoPecho(pecho.value));
+  }
+  private guardarUltimoPecho(pecho: string): void {
+    this.lsSvc.setInLocalStorage(this.arrPechoOption[2], pecho).then(() => {
+      this.handlerSuccess('Guardado');
+      this.getInfoGeneral();
+    });
   }
   private async handlerSuccess(text: string): Promise<void> {
     const toast = await this.toastController.create({
       header: 'Información',
       message: text,
-      icon:'checkmark-circle-outline',
+      icon: 'checkmark-circle-outline',
       mode: 'ios',
-      color:'success',
+      color: 'success',
       duration: 1500,
       position: 'bottom',
     });
@@ -149,5 +161,6 @@ export class LactanciaPage {
   private deleteLS(): void {
     this.lsSvc.removeFromLocalStorage(this.arrPechoOption[0]).then();
     this.lsSvc.removeFromLocalStorage(this.arrPechoOption[1]).then();
+    this.lsSvc.removeFromLocalStorage(this.arrPechoOption[2]).then();
   }
 }
