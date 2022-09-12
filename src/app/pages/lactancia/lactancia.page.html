@@ -24,11 +24,23 @@
               </ion-item>
               <ng-container *ngIf="pechoIzq.length > 0; else limpio">
                 <div
-                  *ngFor="let time of pechoIzq"
-                  class="ion-padding"
+                  *ngFor="let time of pechoIzq; let idx = index"
                   slot="content"
                 >
-                  {{time}}
+                  <ion-item-sliding>
+                    <ion-item>
+                      <ion-label class="ion-text-center">{{time}}</ion-label>
+                    </ion-item>
+                    <ion-item-options side="end">
+                      <ion-item-option
+                        (click)="btnDeleteHorario('lactanciaPechoIzquierdo',idx)"
+                        color="danger"
+                      >
+                        Eliminar
+                        <ion-icon slot="top" name="trash-outline"></ion-icon>
+                      </ion-item-option>
+                    </ion-item-options>
+                  </ion-item-sliding>
                 </div>
               </ng-container>
             </ion-accordion>
@@ -49,11 +61,23 @@
               </ion-item>
               <ng-container *ngIf="pechoDer.length > 0; else limpio">
                 <div
-                  *ngFor="let time of pechoDer"
-                  class="ion-padding"
+                  *ngFor="let time of pechoDer; let idx = index"
                   slot="content"
                 >
-                  {{time}}
+                  <ion-item-sliding>
+                    <ion-item>
+                      <ion-label class="ion-text-center">{{time}}</ion-label>
+                    </ion-item>
+                    <ion-item-options side="end">
+                      <ion-item-option
+                        (click)="btnDeleteHorario('lactanciaPechoDerecho',idx)"
+                        color="danger"
+                      >
+                        Eliminar
+                        <ion-icon slot="top" name="trash-outline"></ion-icon>
+                      </ion-item-option>
+                    </ion-item-options>
+                  </ion-item-sliding>
                 </div>
               </ng-container>
             </ion-accordion>
