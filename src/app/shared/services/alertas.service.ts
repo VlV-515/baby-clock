@@ -26,10 +26,11 @@ export class AlertasService {
     const alert = await this.alertController.create({
       header: 'Confirmacion!',
       message,
+      mode: 'ios',
       buttons: [
         {
           text: 'Cancelar',
-          role: 'cancel',
+          role: 'destructive',
         },
         {
           text: 'OK',
