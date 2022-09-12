@@ -1,7 +1,8 @@
-import { LactanciaModel, PechoModel } from './interfaces/lactancia.interface';
 import { Component } from '@angular/core';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
+import { AlertasService } from './../../shared/services/alertas.service';
 import { LocalStorageService } from './../../shared/services/local-storage.service';
+import { LactanciaModel, PechoModel } from './interfaces/lactancia.interface';
 
 @Component({
   selector: 'app-lactancia',
@@ -17,11 +18,13 @@ export class LactanciaPage {
   pechoIzq: any[] = [];
   pechoDer: any[] = [];
   ultimoPecho: PechoModel = null;
+
   constructor(
+    private readonly alertasSvc: AlertasService,
     private readonly lsSvc: LocalStorageService,
-    private readonly alertController: AlertController,
-    private readonly toastController: ToastController
+    private readonly alertController: AlertController
   ) {}
+
   ionViewWillEnter() {
     //this.deleteLS();
     this.getInfoGeneral();
@@ -34,7 +37,7 @@ export class LactanciaPage {
     return this.ultimoPecho === (pecho as unknown as PechoModel);
   }
   async btnDeleteHorario(pecho: string, index: number): Promise<void> {
-    const estaSeguro = await this.handlerConfirm({
+    const estaSeguro = await this.alertasSvc.handlerConfirm({
       message: '¿Seguro que desea eliminarlo?',
     });
     if (estaSeguro) {
@@ -149,7 +152,7 @@ export class LactanciaPage {
   }
   private guardarUltimoPecho(pecho: string): void {
     this.lsSvc.setInLocalStorage(this.arrPechoOption[2], pecho).then(() => {
-      this.handlerMessages({
+      this.alertasSvc.handlerMessages({
         message: 'Guardado',
         icon: 'checkmark-circle-outline',
         color: 'success',
@@ -159,45 +162,11 @@ export class LactanciaPage {
   }
   private deleteHorario(index: number, arrPecho: any[]): void {
     arrPecho.splice(index, 1);
-    this.handlerMessages({
+    this.alertasSvc.handlerMessages({
       message: 'Eliminado',
       color: 'danger',
       icon: 'trash-outline',
     });
-  }
-  //TODO:Migrar el handler a un service de alertas donde tambien se incluyan los modales de confirmacion
-  private async handlerMessages({ message, icon, color }): Promise<void> {
-    const toast = await this.toastController.create({
-      header: 'Información',
-      position: 'bottom',
-      duration: 1500,
-      mode: 'ios',
-      message,
-      icon,
-      color,
-    });
-
-    await toast.present();
-  }
-  private async handlerConfirm({ message = '' }): Promise<boolean> {
-    const alert = await this.alertController.create({
-      header: 'Confirmacion!',
-      message,
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-        },
-        {
-          text: 'OK',
-          role: 'confirm',
-        },
-      ],
-    });
-
-    await alert.present();
-    const { role } = await alert.onDidDismiss();
-    return role === 'confirm';
   }
   private deleteLS(): void {
     this.lsSvc.removeFromLocalStorage(this.arrPechoOption[0]).then();
