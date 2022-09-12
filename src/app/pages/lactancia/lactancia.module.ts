@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { LactanciaPageRoutingModule } from './lactancia-routing.module';
 
 import { LactanciaPage } from './lactancia.page';
+import { HoraPipe } from 'src/app/shared/pipes/hora.pipe';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { LactanciaPage } from './lactancia.page';
     IonicModule,
     LactanciaPageRoutingModule
   ],
-  declarations: [LactanciaPage]
+  declarations: [LactanciaPage, HoraPipe]
 })
 export class LactanciaPageModule {}
