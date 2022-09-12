@@ -43,16 +43,14 @@ export class LactanciaPage {
   }
   private getInfoPechoIzq(): void {
     this.lsSvc.getFromLocalStorage(this.arrPechoOption[0]).then((resIzq) => {
-      this.pechoIzq = JSON.parse(resIzq) || [];
-      //console.log({ resIzq });
-      //console.log({ pechoIzq: this.pechoIzq });
+      const arrPecho = JSON.parse(resIzq).slice(0, 3) || [];
+      this.pechoIzq = arrPecho;
     });
   }
   private getInfoPechoDer(): void {
     this.lsSvc.getFromLocalStorage(this.arrPechoOption[1]).then((resDer) => {
-      this.pechoDer = JSON.parse(resDer) || [];
-      //console.log({ resDer });
-      //console.log({ pechoDer: this.pechoDer });
+      const arrPecho = JSON.parse(resDer).slice(0, 3) || [];
+      this.pechoDer = arrPecho;
     });
   }
   private getInfoUltimoPecho(): void {
