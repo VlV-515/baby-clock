@@ -11,84 +11,56 @@
   <ion-content class="body">
     <ion-list class="bg-transparent">
       <ion-grid>
-        <ion-row
-          class="ion-text-center ion-align-items-center ion-justify-content-center"
-        >
-          <ion-col
-            size="10"
-            [ngClass]="{'ultimo-pecho':isUltimoPecho(optPecho[0])}"
-          >
-            <ion-accordion-group>
-              <ion-accordion value="first" class="select-pecho">
-                <ion-item slot="header" color="light">
-                  <ion-label>Pecho Izquierdo</ion-label>
-                </ion-item>
-                <ng-container *ngIf="pechoIzq.length > 0; else limpio">
-                  <div
-                    *ngFor="let time of pechoIzq; let idx = index"
-                    slot="content"
-                  >
-                    <ion-item-sliding>
-                      <ion-item>
-                        <ion-label class="ion-text-center"
-                          >{{time | hora}}</ion-label
-                        >
-                      </ion-item>
-                      <ion-item-options side="end">
-                        <ion-item-option
-                          (click)="btnDeleteHorario(optPecho[0],idx)"
-                          color="danger"
-                        >
-                          Eliminar
-                          <ion-icon slot="top" name="trash-outline"></ion-icon>
-                        </ion-item-option>
-                      </ion-item-options>
-                    </ion-item-sliding>
-                  </div>
-                </ng-container>
-              </ion-accordion>
-            </ion-accordion-group>
-          </ion-col>
-        </ion-row>
-        <ion-row
-          class="ion-text-center ion-align-items-center ion-justify-content-center"
-        >
-          <ion-col
-            size="10"
-            [ngClass]="{'ultimo-pecho':isUltimoPecho(optPecho[1])}"
-          >
-            <ion-accordion-group>
-              <ion-accordion value="first" class="select-pecho">
-                <ion-item slot="header" color="light">
-                  <ion-label>Pecho Derecho</ion-label>
-                </ion-item>
-                <ng-container *ngIf="pechoDer.length > 0; else limpio">
-                  <div
-                    *ngFor="let time of pechoDer; let idx = index"
-                    slot="content"
-                  >
-                    <ion-item-sliding>
-                      <ion-item>
-                        <ion-label class="ion-text-center"
-                          >{{time | hora}}</ion-label
-                        >
-                      </ion-item>
-                      <ion-item-options side="end">
-                        <ion-item-option
-                          (click)="btnDeleteHorario(optPecho[1],idx)"
-                          color="danger"
-                        >
-                          Eliminar
-                          <ion-icon slot="top" name="trash-outline"></ion-icon>
-                        </ion-item-option>
-                      </ion-item-options>
-                    </ion-item-sliding>
-                  </div>
-                </ng-container>
-              </ion-accordion>
-            </ion-accordion-group>
-          </ion-col>
-        </ion-row>
+        <ng-container *ngFor="let option of optPecho">
+          <ng-container *ngIf="option!==optPecho[2]">
+            <ion-row
+              class="ion-text-center ion-align-items-center ion-justify-content-center"
+            >
+              <ion-col
+                size="10"
+                [ngClass]="{'ultimo-pecho':isUltimoPecho(option)}"
+              >
+                <ion-accordion-group>
+                  <ion-accordion value="first" class="select-pecho">
+                    <ion-item slot="header" color="light">
+                      <ion-label>
+                        Pecho {{option===optPecho[0] ? 'Izquierdo' : 'Derecho'}}
+                      </ion-label>
+                    </ion-item>
+                    <ng-container
+                      *ngIf="option===optPecho[0] ? pechoIzq.length > 0 : pechoDer.length > 0; else limpio"
+                    >
+                      <div
+                        *ngFor="let time of option===optPecho[0] ? pechoIzq : pechoDer; let idx = index"
+                        slot="content"
+                      >
+                        <ion-item-sliding>
+                          <ion-item>
+                            <ion-label class="ion-text-center"
+                              >{{time | hora}}</ion-label
+                            >
+                          </ion-item>
+                          <ion-item-options side="end">
+                            <ion-item-option
+                              (click)="btnDeleteHorario(option,idx)"
+                              color="danger"
+                            >
+                              Eliminar
+                              <ion-icon
+                                slot="top"
+                                name="trash-outline"
+                              ></ion-icon>
+                            </ion-item-option>
+                          </ion-item-options>
+                        </ion-item-sliding>
+                      </div>
+                    </ng-container>
+                  </ion-accordion>
+                </ion-accordion-group>
+              </ion-col>
+            </ion-row>
+          </ng-container>
+        </ng-container>
       </ion-grid>
     </ion-list>
     <ion-fab vertical="bottom" horizontal="center">
