@@ -15,106 +15,25 @@
             <h1>Ian Santiago</h1>
           </ion-col>
         </ion-row>
-
-        <ion-row
-          class="ion-text-center ion-align-items-center ion-justify-content-center"
-        >
-          <ion-col size="10">
-            <ion-button
-              expand="block"
-              size="medium"
-              class="btn btn-lactancia"
-              color="none"
-              routerLink="/lactancia"
-            >
-              <ion-icon slot="start" name="restaurant-outline"></ion-icon>
-              LACTANCIA
-            </ion-button>
-          </ion-col>
-        </ion-row>
-        <ion-row
-          class="ion-text-center ion-align-items-center ion-justify-content-center"
-        >
-          <ion-col size="10">
-            <ion-button
-              disabled
-              expand="block"
-              size="medium"
-              class="btn btn-cambio"
-              color="none"
-            >
-              <ion-icon slot="start" name="shirt-outline"></ion-icon>
-              CAMBIO
-            </ion-button>
-          </ion-col>
-        </ion-row>
-
-        <ion-row
-          class="ion-text-center ion-align-items-center ion-justify-content-center"
-        >
-          <ion-col size="10">
-            <ion-button
-              disabled
-              expand="block"
-              size="medium"
-              class="btn btn-juego"
-              color="none"
-            >
-              <ion-icon slot="start" name="football-outline"></ion-icon>
-              JUEGO
-            </ion-button>
-          </ion-col>
-        </ion-row>
-
-        <ion-row
-          class="ion-text-center ion-align-items-center ion-justify-content-center"
-        >
-          <ion-col size="10">
-            <ion-button
-              expand="block"
-              size="medium"
-              class="btn btn-banio"
-              color="none"
-              routerLink="/aseo"
-            >
-              <ion-icon slot="start" name="fish-outline"></ion-icon>
-              ASEO
-            </ion-button>
-          </ion-col>
-        </ion-row>
-
-        <ion-row
-          class="ion-text-center ion-align-items-center ion-justify-content-center"
-        >
-          <ion-col size="10">
-            <ion-button
-              disabled
-              expand="block"
-              size="medium"
-              class="btn btn-congelado"
-              color="none"
-            >
-              <ion-icon slot="start" name="snow-outline"></ion-icon>
-              CONGELADO
-            </ion-button>
-          </ion-col>
-        </ion-row>
-        <ion-row
-          class="ion-text-center ion-align-items-center ion-justify-content-center"
-        >
-          <ion-col size="10">
-            <ion-button
-              disabled
-              expand="block"
-              size="medium"
-              class="btn btn-suenio"
-              color="none"
-            >
-              <ion-icon slot="start" name="moon-outline"></ion-icon>
-              SUEÑO
-            </ion-button>
-          </ion-col>
-        </ion-row>
+        <ng-container *ngFor="let obj of objData">
+          <ion-row
+            class="ion-text-center ion-align-items-center ion-justify-content-center"
+          >
+            <ion-col size="10">
+              <ion-button
+                [disabled]="obj.router.length===0"
+                expand="block"
+                size="medium"
+                [class]="'btn btn-'+obj.nombre"
+                color="none"
+                routerLink="/lactancia"
+              >
+                <ion-icon slot="start" [name]="obj.icon"></ion-icon>
+                {{obj.nombre}}
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ng-container>
       </ion-grid>
     </ion-list>
   </ion-content>
