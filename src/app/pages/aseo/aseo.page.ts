@@ -13,9 +13,10 @@ export interface AseoModel {
   styleUrls: ['./aseo.page.scss'],
 })
 export class AseoPage {
-  optTipoAseo = ['AseoPipi', 'AseoPopo'];
+  optTipoAseo = ['AseoPipi', 'AseoPopo', 'AseoRegadera'];
   arrPipi: AseoModel[] = [];
   arrPopo: AseoModel[] = [];
+  arrRegadera: AseoModel[] = [];
 
   constructor(
     private readonly lsSvc: LocalStorageService,
@@ -27,9 +28,10 @@ export class AseoPage {
     this.getAseos();
   }
   //! PUBLICAS
-  public getAseos(): void {
-    this.getAseo(this.optTipoAseo[0]);
-    this.getAseo(this.optTipoAseo[1]);
+  public async getAseos(): Promise<void> {
+    await this.getAseo(this.optTipoAseo[0]);
+    await this.getAseo(this.optTipoAseo[1]);
+    await this.getAseo(this.optTipoAseo[2]);
   }
   public btnAddAseo(): void {
     this.selectAseo();
@@ -47,11 +49,13 @@ export class AseoPage {
     if (tipoAseo === this.optTipoAseo[1]) {
       this.eliminarAseo(this.arrPopo, index, tipoAseo);
     }
+    if (tipoAseo === this.optTipoAseo[2]) {
+      this.eliminarAseo(this.arrRegadera, index, tipoAseo);
+    }
   }
   public btnMostrarDetalle(detalle: string): void {
-    this.alertaSvc.handlerConfirmAlert({
+    this.alertaSvc.handlerMessageAlert({
       message: detalle,
-      btnCancelar: false,
     });
   }
   //! PRIVADAS
@@ -63,8 +67,14 @@ export class AseoPage {
       this.arrPipi = arr;
       return;
     }
-    this.arrPopo = arr;
-    return;
+    if (tipoAseo === this.optTipoAseo[1]) {
+      this.arrPopo = arr;
+      return;
+    }
+    if (tipoAseo === this.optTipoAseo[2]) {
+      this.arrRegadera = arr;
+      return;
+    }
   }
   private async selectAseo(): Promise<void> {
     const alert = await this.alertController.create({
@@ -79,6 +89,11 @@ export class AseoPage {
         {
           label: 'Popo 💩',
           value: this.optTipoAseo[1],
+          type: 'radio',
+        },
+        {
+          label: 'Baño 🛁',
+          value: this.optTipoAseo[2],
           type: 'radio',
         },
       ],
@@ -98,15 +113,16 @@ export class AseoPage {
   private async selectDetallesAseo(tipoAseo: string): Promise<void> {
     const today = new Date();
     const time = today.getHours() + ':' + today.getMinutes();
+    const isRegadera = tipoAseo === this.optTipoAseo[2];
 
     const alert = await this.alertController.create({
       mode: 'ios',
       header: 'Selecciona los detalles',
       inputs: [
         {
-          type: 'time',
-          value: time,
-          label: 'Hora',
+          type: isRegadera ? 'datetime-local' : 'time',
+          value: isRegadera ? today : time,
+          label: isRegadera ? 'Fecha' : 'Hora',
         },
         {
           type: 'textarea',
@@ -131,18 +147,31 @@ export class AseoPage {
       cuando: hora,
       detalle,
     };
-    const arrObj: AseoModel[] =
-      tipoAseo === this.optTipoAseo[0]
-        ? [obj, ...this.arrPipi]
-        : [obj, ...this.arrPipi];
+    let arrObj: AseoModel[];
+    if (tipoAseo === this.optTipoAseo[0]) {
+      arrObj = this.creaOBJ(obj, this.arrPipi);
+    }
+    if (tipoAseo === this.optTipoAseo[1]) {
+      arrObj = this.creaOBJ(obj, this.arrPopo);
+    }
+    if (tipoAseo === this.optTipoAseo[2]) {
+      arrObj = this.creaOBJ(obj, this.arrRegadera);
+    }
+
     await this.lsSvc.setInLocalStorage(tipoAseo, JSON.stringify(arrObj));
-    this.alertaSvc.handlerMessages({ message: 'Guardado', color: 'success' });
-    this.getAseo(tipoAseo);
+    this.alertaSvc.handlerToastMessagesAlert({
+      message: 'Guardado',
+      color: 'success',
+    });
+    await this.getAseo(tipoAseo);
+  }
+  private creaOBJ(obj, arr): AseoModel[] {
+    return [obj, ...arr];
   }
   private async eliminarAseo(arr, index, tipoAseo): Promise<void> {
     arr.splice(index, 1);
     this.actualizarAseo(tipoAseo, arr);
-    this.alertaSvc.handlerMessages({
+    this.alertaSvc.handlerToastMessagesAlert({
       message: 'Eliminado',
       color: 'danger',
     });
