@@ -34,6 +34,20 @@ export class AseoPage {
   public btnAddAseo(): void {
     this.selectAseo();
   }
+  public async btnDelete(index, tipoAseo): Promise<void> {
+    const estaSeguro = await this.alertaSvc.handlerConfirmAlert({
+      message: '¿Seguro que desea eliminarlo?',
+    });
+    if (!estaSeguro) {
+      return;
+    }
+    if (tipoAseo === this.optTipoAseo[0]) {
+      this.eliminarAseo(this.arrPipi, index, tipoAseo);
+    }
+    if (tipoAseo === this.optTipoAseo[1]) {
+      this.eliminarAseo(this.arrPopo, index, tipoAseo);
+    }
+  }
   public btnMostrarDetalle(detalle: string): void {
     this.alertaSvc.handlerConfirmAlert({
       message: detalle,
@@ -124,5 +138,17 @@ export class AseoPage {
     await this.lsSvc.setInLocalStorage(tipoAseo, JSON.stringify(arrObj));
     this.alertaSvc.handlerMessages({ message: 'Guardado', color: 'success' });
     this.getAseo(tipoAseo);
+  }
+  private async eliminarAseo(arr, index, tipoAseo): Promise<void> {
+    arr.splice(index, 1);
+    this.actualizarAseo(tipoAseo, arr);
+    this.alertaSvc.handlerMessages({
+      message: 'Eliminado',
+      color: 'danger',
+    });
+  }
+  private async actualizarAseo(tipoAseo, arrAseo): Promise<void> {
+    await this.lsSvc.setInLocalStorage(tipoAseo, JSON.stringify([...arrAseo]));
+    await this.getAseo(tipoAseo);
   }
 }

@@ -25,7 +25,7 @@
                     slot="content"
                   >
                     <ion-item-sliding>
-                      <ion-item (click)='btnMostrarDetalle(time.detalle)'>
+                      <ion-item (click)="btnMostrarDetalle(time.detalle)">
                         <ion-label class="ion-text-center"
                           >{{time.cuando | hora}}</ion-label
                         >
@@ -33,6 +33,7 @@
                       <ion-item-options side="end">
                         <ion-item-option
                           color="danger"
+                          (click)="btnDelete(idx, optTipoAseo[0])"
                         >
                           Eliminar
                           <ion-icon slot="top" name="trash-outline"></ion-icon>
@@ -48,9 +49,7 @@
         <ion-row
           class="ion-text-center ion-align-items-center ion-justify-content-center"
         >
-          <ion-col
-            size="10"
-          >
+          <ion-col size="10">
             <ion-accordion-group>
               <ion-accordion value="first" class="select-aseo">
                 <ion-item slot="header" color="light">
@@ -62,7 +61,7 @@
                     slot="content"
                   >
                     <ion-item-sliding>
-                      <ion-item (click)='btnMostrarDetalle(time.detalle)'>
+                      <ion-item (click)="btnMostrarDetalle(time.detalle)">
                         <ion-label class="ion-text-center"
                           >{{time.cuando | hora}}</ion-label
                         >
@@ -70,6 +69,7 @@
                       <ion-item-options side="end">
                         <ion-item-option
                           color="danger"
+                          (click)="btnDelete(idx, optTipoAseo[1])"
                         >
                           Eliminar
                           <ion-icon slot="top" name="trash-outline"></ion-icon>
