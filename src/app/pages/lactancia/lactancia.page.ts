@@ -152,7 +152,7 @@ export class LactanciaPage {
   }
   private guardarUltimoPecho(pecho: string): void {
     this.lsSvc.setInLocalStorage(this.arrPechoOption[2], pecho).then(() => {
-      this.alertasSvc.handlerMessages({
+      this.alertasSvc.handlerToastMessagesAlert({
         message: 'Guardado',
         color: 'success',
       });
@@ -161,7 +161,7 @@ export class LactanciaPage {
   }
   private deleteHorario(index: number, arrPecho: any[]): void {
     arrPecho.splice(index, 1);
-    this.alertasSvc.handlerMessages({
+    this.alertasSvc.handlerToastMessagesAlert({
       message: 'Eliminado',
       color: 'danger',
     });

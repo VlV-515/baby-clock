@@ -9,7 +9,7 @@ export class AlertasService {
     private readonly alertController: AlertController,
     private readonly toastController: ToastController
   ) {}
-  public async handlerMessages({ message, color }): Promise<void> {
+  public async handlerToastMessagesAlert({ message, color }): Promise<void> {
     let icon: string;
     if (color === 'success') {
       icon = 'checkmark-circle-outline';
@@ -29,35 +29,40 @@ export class AlertasService {
 
     await toast.present();
   }
-  public async handlerConfirmAlert({
-    message,
-    btnCancelar = true,
-  }): Promise<boolean> {
-    let header = 'Información';
-    const buttons = [];
-
-    if (btnCancelar) {
-      header = 'Confirmación';
-      buttons.push({
-        text: 'Cancelar',
-        role: 'destructive',
-      });
-    }
-
-    buttons.push({
-      text: 'OK',
-      role: 'confirm',
-    });
-
+  public async handlerConfirmAlert({ message }): Promise<boolean> {
     const alert = await this.alertController.create({
       mode: 'ios',
-      header,
+      header: 'Confirmación',
       message,
-      buttons,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'destructive',
+        },
+        {
+          text: 'OK',
+          role: 'confirm',
+        },
+      ],
     });
 
     await alert.present();
     const { role } = await alert.onDidDismiss();
     return role === 'confirm';
+  }
+  public async handlerMessageAlert({ message }): Promise<void> {
+    const alert = await this.alertController.create({
+      mode: 'ios',
+      header: 'Información',
+      message,
+      buttons: [
+        {
+          text: 'OK',
+          role: 'confirm',
+        },
+      ],
+    });
+
+    await alert.present();
   }
 }
