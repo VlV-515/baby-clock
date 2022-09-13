@@ -1,7 +1,7 @@
 <ion-app mode="ios">
   <ion-header>
     <ion-toolbar>
-      <ion-menu-button slot='start' color="dark"></ion-menu-button>
+      <ion-menu-button slot="start" color="dark"></ion-menu-button>
       <ion-title>Baby Clock</ion-title>
     </ion-toolbar>
   </ion-header>
@@ -22,12 +22,12 @@
           >
             <ion-col size="10">
               <ion-button
-                [disabled]="obj.router.length===0"
                 expand="block"
                 size="medium"
-                [class]="'btn btn-'+obj.nombre"
                 color="none"
-                routerLink="/lactancia"
+                [class]="'btn btn-'+obj.nombre"
+                [disabled]="obj.router.length===0"
+                [routerLink]="obj.router"
               >
                 <ion-icon slot="start" [name]="obj.icon"></ion-icon>
                 {{obj.nombre | uppercase}}

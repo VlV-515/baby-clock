@@ -61,7 +61,7 @@ export class AseoPage {
   //! PRIVADAS
   private async getAseo(tipoAseo): Promise<void> {
     const aseo = await this.lsSvc.getFromLocalStorage(tipoAseo);
-    const arr = JSON.parse(aseo).slice(0, 5) || [];
+    const arr = aseo ? JSON.parse(aseo).slice(0, 5) : [];
 
     if (tipoAseo === this.optTipoAseo[0]) {
       this.arrPipi = arr;
