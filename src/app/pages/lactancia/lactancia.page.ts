@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { Component, ViewChild } from '@angular/core';
+import { AlertController, IonList } from '@ionic/angular';
 import { AlertasService } from './../../shared/services/alertas.service';
 import { LocalStorageService } from './../../shared/services/local-storage.service';
 import { LactanciaModel, PechoModel } from './interfaces/lactancia.interface';
@@ -10,6 +10,7 @@ import { LactanciaModel, PechoModel } from './interfaces/lactancia.interface';
   styleUrls: ['./lactancia.page.scss'],
 })
 export class LactanciaPage {
+  @ViewChild(IonList) ionList: IonList;
   optPecho: string[] = [
     'lactanciaPechoIzquierdo',
     'lactanciaPechoDerecho',
@@ -37,6 +38,7 @@ export class LactanciaPage {
     return this.ultimoPecho === (pecho as unknown as PechoModel);
   }
   async btnDeleteHorario(pecho: string, index: number): Promise<void> {
+    this.ionList.closeSlidingItems();
     const estaSeguro = await this.alertasSvc.handlerConfirmAlert({
       message: '¿Seguro que desea eliminarlo?',
     });
@@ -72,6 +74,7 @@ export class LactanciaPage {
   }
   private async seleccionarPecho(): Promise<void> {
     const alert = await this.alertController.create({
+      backdropDismiss:false,
       mode: 'ios',
       header: 'Selecciona un pecho',
       inputs: [
@@ -111,6 +114,7 @@ export class LactanciaPage {
     const today = new Date();
     const time = today.getHours() + ':' + today.getMinutes();
     const alert = await this.alertController.create({
+      backdropDismiss:false,
       mode: 'ios',
       header: 'Selecciona una hora',
       subHeader: pecho.nombre,

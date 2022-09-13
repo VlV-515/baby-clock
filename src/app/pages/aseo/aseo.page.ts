@@ -1,7 +1,7 @@
 import { LocalStorageService } from './../../shared/services/local-storage.service';
-import { AlertController } from '@ionic/angular';
+import { AlertController, IonList } from '@ionic/angular';
 import { AlertasService } from './../../shared/services/alertas.service';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 export interface AseoModel {
   cuando: string;
   detalle: string;
@@ -13,6 +13,7 @@ export interface AseoModel {
   styleUrls: ['./aseo.page.scss'],
 })
 export class AseoPage {
+  @ViewChild(IonList) ionList: IonList;
   optTipoAseo = ['AseoPipi', 'AseoPopo', 'AseoRegadera'];
   arrPipi: AseoModel[] = [];
   arrPopo: AseoModel[] = [];
@@ -38,6 +39,7 @@ export class AseoPage {
     this.selectAseo();
   }
   public async btnDelete(index, tipoAseo): Promise<void> {
+    this.ionList.closeSlidingItems();
     const estaSeguro = await this.alertaSvc.handlerConfirmAlert({
       message: '¿Seguro que desea eliminarlo?',
     });
@@ -79,6 +81,7 @@ export class AseoPage {
   }
   private async selectAseo(): Promise<void> {
     const alert = await this.alertController.create({
+      backdropDismiss:false,
       mode: 'ios',
       header: 'Selecciona un tipo de aseo',
       inputs: [
@@ -117,6 +120,7 @@ export class AseoPage {
     const isRegadera = tipoAseo === this.optTipoAseo[2];
 
     const alert = await this.alertController.create({
+      backdropDismiss:false,
       mode: 'ios',
       header: 'Selecciona los detalles',
       inputs: [
