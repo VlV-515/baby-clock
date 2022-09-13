@@ -16,7 +16,7 @@
         >
           <ion-col
             size="10"
-            [ngClass]="{'ultimo-pecho':isUltimoPecho('lactanciaPechoIzquierdo')}"
+            [ngClass]="{'ultimo-pecho':isUltimoPecho(optPecho[0])}"
           >
             <ion-accordion-group>
               <ion-accordion value="first" class="select-pecho">
@@ -36,7 +36,7 @@
                       </ion-item>
                       <ion-item-options side="end">
                         <ion-item-option
-                          (click)="btnDeleteHorario('lactanciaPechoIzquierdo',idx)"
+                          (click)="btnDeleteHorario(optPecho[0],idx)"
                           color="danger"
                         >
                           Eliminar
@@ -55,7 +55,7 @@
         >
           <ion-col
             size="10"
-            [ngClass]="{'ultimo-pecho':isUltimoPecho('lactanciaPechoDerecho')}"
+            [ngClass]="{'ultimo-pecho':isUltimoPecho(optPecho[1])}"
           >
             <ion-accordion-group>
               <ion-accordion value="first" class="select-pecho">
@@ -75,7 +75,7 @@
                       </ion-item>
                       <ion-item-options side="end">
                         <ion-item-option
-                          (click)="btnDeleteHorario('lactanciaPechoDerecho',idx)"
+                          (click)="btnDeleteHorario(optPecho[1],idx)"
                           color="danger"
                         >
                           Eliminar

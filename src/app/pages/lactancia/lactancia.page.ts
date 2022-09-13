@@ -10,7 +10,7 @@ import { LactanciaModel, PechoModel } from './interfaces/lactancia.interface';
   styleUrls: ['./lactancia.page.scss'],
 })
 export class LactanciaPage {
-  arrPechoOption: string[] = [
+  optPecho: string[] = [
     'lactanciaPechoIzquierdo',
     'lactanciaPechoDerecho',
     'LactanciaUltimoPecho',
@@ -41,7 +41,7 @@ export class LactanciaPage {
       message: '¿Seguro que desea eliminarlo?',
     });
     if (estaSeguro) {
-      if (pecho === this.arrPechoOption[0]) {
+      if (pecho === this.optPecho[0]) {
         this.deleteHorario(index, this.pechoIzq);
         return;
       }
@@ -54,22 +54,21 @@ export class LactanciaPage {
     this.getInfoPechoDer();
     this.getInfoUltimoPecho();
   }
-  private getInfoPechoIzq(): void {
-    this.lsSvc.getFromLocalStorage(this.arrPechoOption[0]).then((resIzq) => {
-      const arrPecho = resIzq ? JSON.parse(resIzq).slice(0, 3) : [];
-      this.pechoIzq = arrPecho;
-    });
+  private async getInfoPechoIzq(): Promise<void> {
+    const resIzq = await this.lsSvc.getFromLocalStorage(this.optPecho[0]);
+    const arrPecho = resIzq ? JSON.parse(resIzq).slice(0, 3) : [];
+    this.pechoIzq = arrPecho;
   }
-  private getInfoPechoDer(): void {
-    this.lsSvc.getFromLocalStorage(this.arrPechoOption[1]).then((resDer) => {
-      const arrPecho = resDer ? JSON.parse(resDer).slice(0, 3) : [];
-      this.pechoDer = arrPecho;
-    });
+  private async getInfoPechoDer(): Promise<void> {
+    const resDer = await this.lsSvc.getFromLocalStorage(this.optPecho[1]);
+    const arrPecho = resDer ? JSON.parse(resDer).slice(0, 3) : [];
+    this.pechoDer = arrPecho;
   }
-  private getInfoUltimoPecho(): void {
-    this.lsSvc.getFromLocalStorage(this.arrPechoOption[2]).then((res) => {
-      this.ultimoPecho = (res as unknown as PechoModel) || null;
-    });
+  private async getInfoUltimoPecho(): Promise<void> {
+    const resPecho = (await this.lsSvc.getFromLocalStorage(
+      this.optPecho[2]
+    )) as unknown as PechoModel;
+    this.ultimoPecho = resPecho || null;
   }
   private async seleccionarPecho(): Promise<void> {
     const alert = await this.alertController.create({
@@ -81,13 +80,16 @@ export class LactanciaPage {
           type: 'radio',
           value: {
             nombre: 'Pecho Izquierdo',
-            value: 'lactanciaPechoIzquierdo',
+            value: this.optPecho[0],
           },
         },
         {
           label: 'Pecho Derecho',
           type: 'radio',
-          value: { nombre: 'Pecho Derecho', value: 'lactanciaPechoDerecho' },
+          value: {
+            nombre: 'Pecho Derecho',
+            value: this.optPecho[1],
+          },
         },
       ],
       buttons: [
@@ -135,29 +137,30 @@ export class LactanciaPage {
     await alert.present();
   }
   private guardarLactancia(pecho: LactanciaModel, hora: string): void {
-    if (pecho.value === this.arrPechoOption[0]) {
+    if (pecho.value === this.optPecho[0]) {
       this.saveLSLactancia(pecho, hora, this.pechoIzq);
       return;
     }
     this.saveLSLactancia(pecho, hora, this.pechoDer);
   }
-  private saveLSLactancia(
+  private async saveLSLactancia(
     pecho: LactanciaModel,
     hora: string,
     arrayPechos: string[]
-  ): void {
-    this.lsSvc
-      .setInLocalStorage(pecho.value, JSON.stringify([hora, ...arrayPechos]))
-      .then((res) => this.guardarUltimoPecho(pecho.value));
+  ): Promise<void> {
+    await this.lsSvc.setInLocalStorage(
+      pecho.value,
+      JSON.stringify([hora, ...arrayPechos])
+    );
+    this.guardarUltimoPecho(pecho.value);
   }
-  private guardarUltimoPecho(pecho: string): void {
-    this.lsSvc.setInLocalStorage(this.arrPechoOption[2], pecho).then(() => {
-      this.alertasSvc.handlerToastMessagesAlert({
-        message: 'Guardado',
-        color: 'success',
-      });
-      this.getInfoGeneral();
+  private async guardarUltimoPecho(pecho: string): Promise<void> {
+    await this.lsSvc.setInLocalStorage(this.optPecho[2], pecho);
+    this.alertasSvc.handlerToastMessagesAlert({
+      message: 'Guardado',
+      color: 'success',
     });
+    this.getInfoGeneral();
   }
   private deleteHorario(index: number, arrPecho: any[]): void {
     arrPecho.splice(index, 1);
@@ -167,8 +170,8 @@ export class LactanciaPage {
     });
   }
   private deleteLS(): void {
-    this.lsSvc.removeFromLocalStorage(this.arrPechoOption[0]).then();
-    this.lsSvc.removeFromLocalStorage(this.arrPechoOption[1]).then();
-    this.lsSvc.removeFromLocalStorage(this.arrPechoOption[2]).then();
+    this.optPecho.forEach(
+      async (key) => await this.lsSvc.removeFromLocalStorage(key)
+    );
   }
 }

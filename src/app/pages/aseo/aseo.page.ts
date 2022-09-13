@@ -25,6 +25,7 @@ export class AseoPage {
   ) {}
   //! SISTEMA
   ionViewWillEnter() {
+    //this.deleteLS();
     this.getAseos();
   }
   //! PUBLICAS
@@ -179,5 +180,10 @@ export class AseoPage {
   private async actualizarAseo(tipoAseo, arrAseo): Promise<void> {
     await this.lsSvc.setInLocalStorage(tipoAseo, JSON.stringify([...arrAseo]));
     await this.getAseo(tipoAseo);
+  }
+  private deleteLS(): void {
+    this.optTipoAseo.forEach(
+      async (key) => await this.lsSvc.removeFromLocalStorage(key)
+    );
   }
 }
