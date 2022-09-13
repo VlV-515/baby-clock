@@ -1,3 +1,5 @@
+import { environment } from './../environments/environment';
+import { HomeModel } from 'src/app/shared/interfaces/HomeModel.interface';
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,5 +8,7 @@ import { Component } from '@angular/core';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
+  objMenu: HomeModel[] = environment.objMenu;
   constructor() {}
+  public btnRouter(route): void{}
 }

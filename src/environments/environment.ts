@@ -3,7 +3,34 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  objMenu: [
+    {
+      nombre: 'lactancia',
+      router: '/lactancia',
+      icon: 'restaurant-outline',
+    },
+    {
+      nombre: 'aseo',
+      router: '/aseo',
+      icon: 'fish-outline',
+    },
+    {
+      nombre: 'dormir',
+      router: '',
+      icon: 'moon-outline',
+    },
+    {
+      nombre: 'juego',
+      router: '',
+      icon: 'football-outline',
+    },
+    {
+      nombre: 'congelado',
+      router: '',
+      icon: 'snow-outline',
+    },
+  ],
 };
 
 /*

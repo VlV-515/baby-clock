@@ -1,3 +1,24 @@
-<ion-app>
-  <ion-router-outlet></ion-router-outlet>
+<ion-app mode="ios">
+  <ion-menu side="start" menuId="menuMain" contentId="main">
+    <ion-header>
+      <ion-toolbar translucent>
+        <ion-title>Baby Clock</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-menu-toggle *ngFor="let obj of objMenu">
+          <ion-item
+            [disabled]="obj.router.length === 0"
+            [routerLink]="obj.router"
+          >
+            <ion-icon [name]="obj.icon" slot="start"></ion-icon>
+            <ion-label>{{ obj.nombre | titlecase }}</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <ion-router-outlet id="main"></ion-router-outlet>
 </ion-app>
