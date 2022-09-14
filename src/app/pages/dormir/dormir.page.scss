@@ -1,0 +1,29 @@
+ion-content {
+  --background: url(/assets/backgrounds/wp-dormir.jpeg) no-repeat center/cover;
+}
+.bg-tittle {
+  background: #fcf969;
+}
+.btn-fav {
+  --ion-color-base: #fcf969 !important;
+}
+.btn-inicio-container {
+  //background-color: blue;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 0.6rem;
+  padding: 0.6rem;
+  border-radius: 5px;
+}
+.btn-inicio-bien {
+  background-color: #85ff72be;
+  color: #000;
+}
+.btn-inicio-alerta {
+  background-color: #e1b12c;
+  color: #000;
+}
+.btn-inicio-peligro {
+  background-color: #c23616;
+}

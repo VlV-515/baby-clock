@@ -20,6 +20,10 @@ const routes: Routes = [
     path: 'aseo',
     loadChildren: () => import('./pages/aseo/aseo.module').then( m => m.AseoPageModule)
   },
+  {
+    path: 'dormir',
+    loadChildren: () => import('./pages/dormir/dormir.module').then( m => m.DormirPageModule)
+  },
 ];
 
 @NgModule({

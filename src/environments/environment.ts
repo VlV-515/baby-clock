@@ -17,7 +17,7 @@ export const environment = {
     },
     {
       nombre: 'dormir',
-      router: '',
+      router: '/dormir',
       icon: 'moon-outline',
     },
     {

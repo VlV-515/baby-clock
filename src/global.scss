@@ -24,3 +24,13 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+.bg-transparent {
+  background: transparent;
+}
+.span-letra-chica-7{
+  font-size: 0.7rem;
+}
+.item-rounded{
+  border-radius: 5px;
+}
