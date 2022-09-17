@@ -22,16 +22,35 @@
         <ion-row
           class="ion-justify-content-center ion-align-items-center ion-margin"
         >
-          <ion-col size="8">
+          <ion-col size="8" *ngIf="!objNocheEnCurso">
             <ng-container
               *ngIf="objSiestaEnCurso;else btnInicioDesactivadoSiesta"
             >
               <ion-item class="item-rounded" (click)="btnFinalSiestaEnCurso()">
                 <ion-label>
                   <div class="btn-inicio-container btn-inicio-accion">
-                    <span>Inicio</span>
+                    <span>Siesta en curso</span>
                     <span>{{objSiestaEnCurso.hora | hora}}</span>
-                    <span class="span-letra-chica-7">Pulsa para detener</span>
+                    <span class="span-letra-chica-7"
+                      >Pulsa para detener la siesta</span
+                    >
+                  </div>
+                </ion-label>
+              </ion-item>
+            </ng-container>
+          </ion-col>
+          <ion-col size="8" *ngIf="!objSiestaEnCurso">
+            <ng-container
+              *ngIf="objNocheEnCurso;else btnInicioDesactivadoNoche"
+            >
+              <ion-item class="item-rounded" (click)="btnFinalNocheEnCurso()">
+                <ion-label>
+                  <div class="btn-inicio-container btn-inicio-accion">
+                    <span>Noche en curso</span>
+                    <span>{{objNocheEnCurso.hora | hora}}</span>
+                    <span class="span-letra-chica-7"
+                      >Pulsa para detener la noche</span
+                    >
                   </div>
                 </ion-label>
               </ion-item>
@@ -97,7 +116,7 @@
                 <ion-item slot="header">
                   <ion-label class="ion-text-center">Historial Noche</ion-label>
                 </ion-item>
-                <ng-container *ngIf="arrSiesta.length>0; else limpio">
+                <ng-container *ngIf="arrNoche.length>0; else limpio">
                   <div
                     slot="content"
                     *ngFor="let time of arrNoche; let indx = index"
@@ -142,15 +161,19 @@
         </ion-row>
       </ion-grid>
     </ion-list>
-    <ion-fab vertical="bottom" horizontal="center">
-      <ion-fab-button color="dark" class="btn-fav">
-        <ion-icon name="add"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
   </ion-content>
   <ng-template #btnInicioDesactivadoSiesta>
     <ion-item class="item-rounded" (click)="btnInicioSiestaEnCurso()">
-      <ion-label class="ion-text-center"> Pulsa para inciar siesta </ion-label>
+      <ion-label class="ion-text-center">
+        Pulsa para<br />inciar la siesta
+      </ion-label>
+    </ion-item>
+  </ng-template>
+  <ng-template #btnInicioDesactivadoNoche>
+    <ion-item class="item-rounded" (click)="btnInicioNocheEnCurso()">
+      <ion-label class="ion-text-center">
+        Pulsa para<br />inciar la noche
+      </ion-label>
     </ion-item>
   </ng-template>
   <ng-template #limpio>

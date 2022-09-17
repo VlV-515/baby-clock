@@ -6,6 +6,7 @@ export enum TipoDormir {
   siesta = 'DormirSiesta',
   noche = 'DormirNoche',
   siestaEnCurso = 'DormirSiestaEnCurso',
+  nocheEnCurso = 'DormirNocheEnCurso',
 }
 export interface DormirModel {
   inicio: DormirDetalleModel;
@@ -66,6 +67,7 @@ export class DormirPage {
     },
   ];
   objSiestaEnCurso: DormirDetalleModel = null;
+  objNocheEnCurso: DormirDetalleModel = null;
   constructor(
     private readonly lsSvc: LocalStorageService,
     private readonly alertaSvc: AlertasService,
@@ -113,16 +115,57 @@ export class DormirPage {
     );
     await this.lsSvc.setInLocalStorage(TipoDormir.siestaEnCurso, null);
   }
+  public async btnInicioNocheEnCurso(): Promise<void> {
+    const seguro = await this.alertaSvc.handlerConfirmAlert({
+      message: '¿Estas seguro de iniciar el sueño de noche?',
+    });
+    if (!seguro) {
+      return;
+    }
+    const hora = this.getHora();
+    const obj: DormirDetalleModel = { hora };
+    this.objNocheEnCurso = obj;
+    await this.lsSvc.setInLocalStorage(
+      TipoDormir.nocheEnCurso,
+      JSON.stringify(obj)
+    );
+  }
+  public async btnFinalNocheEnCurso(): Promise<void> {
+    const seguro = await this.alertaSvc.handlerConfirmAlert({
+      message: '¿Estas seguro de finalizar el sueño de noche?',
+    });
+    if (!seguro) {
+      return;
+    }
+    const detalle = await this.getDetalle(TipoDormir.noche);
+    const hora = this.getHora();
+    const objNoche: DormirModel = {
+      inicio: this.objNocheEnCurso,
+      final: { hora, detalle },
+    };
+    this.arrNoche.unshift(objNoche);
+    this.objNocheEnCurso = null;
+    await this.lsSvc.setInLocalStorage(
+      TipoDormir.noche,
+      JSON.stringify(this.arrNoche)
+    );
+    await this.lsSvc.setInLocalStorage(TipoDormir.nocheEnCurso, null);
+  }
   //! PRIVADAS
   private async initDormir(): Promise<void> {
     await this.getDormir(TipoDormir.siesta);
     await this.getDormir(TipoDormir.noche);
     await this.getDormir(TipoDormir.siestaEnCurso);
+    await this.getDormir(TipoDormir.nocheEnCurso);
   }
   private async getDormir(tipoDormir: TipoDormir): Promise<void> {
     const dormir = await this.lsSvc.getFromLocalStorage(tipoDormir);
     if (tipoDormir === TipoDormir.siestaEnCurso) {
       this.objSiestaEnCurso = dormir ? JSON.parse(dormir) : null;
+      return;
+    }
+    if (tipoDormir === TipoDormir.nocheEnCurso) {
+      this.objNocheEnCurso = dormir ? JSON.parse(dormir) : null;
       return;
     }
     const arr = dormir ? JSON.parse(dormir).slice(0, 5) : [];
