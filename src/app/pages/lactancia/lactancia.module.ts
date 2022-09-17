@@ -1,3 +1,4 @@
+import { PipesModule } from './../../shared/pipes/pipes.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -7,15 +8,15 @@ import { IonicModule } from '@ionic/angular';
 import { LactanciaPageRoutingModule } from './lactancia-routing.module';
 
 import { LactanciaPage } from './lactancia.page';
-import { HoraPipe } from 'src/app/shared/pipes/hora.pipe';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    LactanciaPageRoutingModule
+    LactanciaPageRoutingModule,
+    PipesModule,
   ],
-  declarations: [LactanciaPage, HoraPipe]
+  declarations: [LactanciaPage],
 })
 export class LactanciaPageModule {}

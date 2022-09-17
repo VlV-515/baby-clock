@@ -1,3 +1,4 @@
+/* eslint-disable @angular-eslint/use-pipe-transform-interface */
 import { Pipe, PipeTransform } from '@angular/core';
 import { DateTime } from 'luxon';
 

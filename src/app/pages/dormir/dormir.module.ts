@@ -1,3 +1,4 @@
+import { PipesModule } from './../../shared/pipes/pipes.module';
 import { HoraPipe } from './../../shared/pipes/hora.pipe';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -14,8 +15,9 @@ import { DormirPage } from './dormir.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    DormirPageRoutingModule
+    DormirPageRoutingModule,
+    PipesModule,
   ],
-  declarations: [DormirPage, HoraPipe]
+  declarations: [DormirPage],
 })
 export class DormirPageModule {}

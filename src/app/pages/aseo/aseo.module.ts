@@ -1,4 +1,4 @@
-import { HoraPipe } from 'src/app/shared/pipes/hora.pipe';
+import { PipesModule } from './../../shared/pipes/pipes.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,8 +14,9 @@ import { AseoPage } from './aseo.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    AseoPageRoutingModule
+    AseoPageRoutingModule,
+    PipesModule
   ],
-  declarations: [AseoPage, HoraPipe]
+  declarations: [AseoPage]
 })
 export class AseoPageModule {}
