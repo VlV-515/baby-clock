@@ -33,7 +33,7 @@
         >
           <ion-col size="8" class="ion-text-center">
             <ion-card class="btn-inicio-alerta">
-              <ion-card-header class="color-black">
+              <ion-card-header class="item-color-black">
                 <ion-card-subtitle> Siesta en curso </ion-card-subtitle>
                 <ion-card-title>
                   {{objSiestaEnCurso.hora | hora}}
@@ -54,7 +54,7 @@
         >
           <ion-col size="8" class="ion-text-center">
             <ion-card class="btn-inicio-alerta">
-              <ion-card-header class="color-black">
+              <ion-card-header class="item-color-black">
                 <ion-card-subtitle> Noche en curso </ion-card-subtitle>
                 <ion-card-title>
                   {{objNocheEnCurso.hora | hora}}
@@ -83,7 +83,7 @@
                     slot="content"
                     *ngFor="let time of arrSiesta; let indx = index"
                   >
-                    <ion-item-sliding class="color-black">
+                    <ion-item-sliding class="item-color-black">
                       <ion-item
                         button
                         lines="full"
@@ -114,7 +114,7 @@
                           </ion-grid>
                         </ion-label>
                       </ion-item>
-                      <ion-item-options side="end" class="color-white">
+                      <ion-item-options side="end" class="item-color-white">
                         <ion-item-option color="danger">
                           Eliminar
                           <ion-icon slot="top" name="trash-outline"></ion-icon>
@@ -140,7 +140,7 @@
                     slot="content"
                     *ngFor="let time of arrNoche; let indx = index"
                   >
-                    <ion-item-sliding class="color-black">
+                    <ion-item-sliding class="item-color-black">
                       <ion-item
                         button
                         lines="full"
@@ -171,7 +171,7 @@
                           </ion-grid>
                         </ion-label>
                       </ion-item>
-                      <ion-item-options side="end" class="color-white">
+                      <ion-item-options side="end" class="item-color-white">
                         <ion-item-option color="danger">
                           Eliminar
                           <ion-icon slot="top" name="trash-outline"></ion-icon>
