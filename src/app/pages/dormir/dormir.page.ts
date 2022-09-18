@@ -184,6 +184,7 @@ export class DormirPage {
   }
   private async getDetalle(tipoDormir: TipoDormir): Promise<string> {
     const alert = await this.alertController.create({
+      mode: 'ios',
       header: `Detalles de la ${
         tipoDormir === TipoDormir.siesta ? 'siesta' : 'noche'
       }`,

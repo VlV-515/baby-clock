@@ -16,7 +16,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -28,12 +28,9 @@
 .bg-transparent {
   background: transparent;
 }
-.span-letra-chica-7{
+.span-letra-chica-7 {
   font-size: 0.7rem;
 }
-.item-rounded{
+.item-rounded {
   border-radius: 5px;
-}
-.item-bock{
-  display: block;
 }
