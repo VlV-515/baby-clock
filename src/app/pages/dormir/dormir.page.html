@@ -12,52 +12,62 @@
       <ion-grid fixed>
         <ion-row
           class="ion-justify-content-center ion-align-items-center ion-margin"
+          *ngIf="!objSiestaEnCurso && !objNocheEnCurso"
         >
-          <ng-container *ngIf="!objNocheEnCurso">
-            <ion-col
-              size="8"
-              class="ion-text-center"
-              *ngIf="objSiestaEnCurso;else btnInicioDesactivadoSiesta"
-            >
-              <ion-card class="btn-inicio-bien">
-                <ion-card-header>
-                  <ion-card-subtitle> Siesta en curso </ion-card-subtitle>
-                  <ion-card-title>
-                    {{objSiestaEnCurso.hora | hora}}
-                  </ion-card-title>
-                  <ion-card-subtitle> Transcurrido </ion-card-subtitle>
-                  <ion-card-subtitle> 10 minutos </ion-card-subtitle>
-                </ion-card-header>
-              </ion-card>
-              <ion-button (click)="btnFinalSiestaEnCurso()" color="tertiary">
-                <ion-icon slot="start" name="partly-sunny-outline"></ion-icon>
-                <ion-text color="dark"> Detener Siesta </ion-text>
-              </ion-button>
-            </ion-col>
-          </ng-container>
-
-          <ng-container *ngIf="!objSiestaEnCurso">
-            <ion-col
-              size="8"
-              class="ion-text-center"
-              *ngIf="objNocheEnCurso;else btnInicioDesactivadoNoche"
-            >
-              <ion-card class="btn-inicio-bien">
-                <ion-card-header>
-                  <ion-card-subtitle> Noche en curso </ion-card-subtitle>
-                  <ion-card-title>
-                    {{objNocheEnCurso.hora | hora}}
-                  </ion-card-title>
-                  <ion-card-subtitle> Transcurrido </ion-card-subtitle>
-                  <ion-card-subtitle> 10 minutos </ion-card-subtitle>
-                </ion-card-header>
-              </ion-card>
-              <ion-button (click)="btnFinalNocheEnCurso()" color="tertiary">
-                <ion-icon slot="start" name="moon-outline"></ion-icon>
-                <ion-text color="dark"> Detener Noche </ion-text>
-              </ion-button>
-            </ion-col>
-          </ng-container>
+          <ion-col size="6" class="ion-text-center">
+            <ion-button (click)="btnInicioSiestaEnCurso()" color="tertiary">
+              <ion-icon slot="start" name="partly-sunny-outline"></ion-icon>
+              Iniciar Siesta
+            </ion-button>
+          </ion-col>
+          <ion-col size="6" class="ion-text-center">
+            <ion-button (click)="btnInicioNocheEnCurso()" color="tertiary">
+              <ion-icon slot="start" name="moon-outline"></ion-icon>
+              Iniciar Noche
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row
+          class="ion-justify-content-center ion-align-items-center ion-margin"
+          *ngIf="objSiestaEnCurso"
+        >
+          <ion-col size="8" class="ion-text-center">
+            <ion-card class="btn-inicio-bien">
+              <ion-card-header>
+                <ion-card-subtitle> Siesta en curso </ion-card-subtitle>
+                <ion-card-title>
+                  {{objSiestaEnCurso.hora | hora}}
+                </ion-card-title>
+                <ion-card-subtitle> Transcurrido </ion-card-subtitle>
+                <ion-card-subtitle> 10 minutos </ion-card-subtitle>
+              </ion-card-header>
+            </ion-card>
+            <ion-button (click)="btnFinalSiestaEnCurso()" color="tertiary">
+              <ion-icon slot="start" name="partly-sunny-outline"></ion-icon>
+              <ion-text color="dark"> Detener Siesta </ion-text>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row
+          class="ion-justify-content-center ion-align-items-center ion-margin"
+          *ngIf="objNocheEnCurso"
+        >
+          <ion-col size="8" class="ion-text-center">
+            <ion-card class="btn-inicio-bien">
+              <ion-card-header>
+                <ion-card-subtitle> Noche en curso </ion-card-subtitle>
+                <ion-card-title>
+                  {{objNocheEnCurso.hora | hora}}
+                </ion-card-title>
+                <ion-card-subtitle> Transcurrido </ion-card-subtitle>
+                <ion-card-subtitle> 10 minutos </ion-card-subtitle>
+              </ion-card-header>
+            </ion-card>
+            <ion-button (click)="btnFinalNocheEnCurso()" color="tertiary">
+              <ion-icon slot="start" name="moon-outline"></ion-icon>
+              <ion-text color="dark"> Detener Noche </ion-text>
+            </ion-button>
+          </ion-col>
         </ion-row>
 
         <ion-row class="ion-justify-content-center ion-align-items-center">
@@ -165,22 +175,7 @@
       </ion-grid>
     </ion-list>
   </ion-content>
-  <ng-template #btnInicioDesactivadoSiesta>
-    <ion-col size="6" class="ion-text-center">
-      <ion-button (click)="btnInicioSiestaEnCurso()" color="tertiary">
-        <ion-icon slot="start" name="partly-sunny-outline"></ion-icon>
-        Iniciar Siesta
-      </ion-button>
-    </ion-col>
-  </ng-template>
-  <ng-template #btnInicioDesactivadoNoche>
-    <ion-col size="6" class="ion-text-center">
-      <ion-button (click)="btnInicioNocheEnCurso()" color="tertiary">
-        <ion-icon slot="start" name="moon-outline"></ion-icon>
-        Iniciar Noche
-      </ion-button>
-    </ion-col>
-  </ng-template>
+
   <ng-template #limpio>
     <div class="ion-padding" slot="content">SIN REGISTRO</div>
   </ng-template>
