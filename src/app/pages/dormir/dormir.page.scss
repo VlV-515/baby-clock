@@ -4,18 +4,18 @@ ion-content {
 .bg-tittle {
   background: #fcf969;
 }
+.bg-list-header{
+  --background: #bea8eb;
+}
+.bg-item-acordeon{
+  --background: #fbef54;
+}
 .btn-inicio-bien {
-  background-color: #17a914;
-  * {
-    color: #000;
-  }
+  background-color: #85e5a6;
 }
 .btn-inicio-alerta {
-  background-color: #c6bd09;
-  * {
-    color: #000;
-  }
+  background-color: #faff6f;
 }
 .btn-inicio-peligro {
-  background-color: #ae2b2b;
+  background-color: #f77b7c;
 }

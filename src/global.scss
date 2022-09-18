@@ -34,3 +34,13 @@
 .item-rounded {
   border-radius: 5px;
 }
+.item-color-black {
+  * {
+    color: #000;
+  }
+}
+.item-color-white {
+  * {
+    color: #fff;
+  }
+}

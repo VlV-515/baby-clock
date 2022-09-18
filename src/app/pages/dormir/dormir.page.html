@@ -32,8 +32,8 @@
           *ngIf="objSiestaEnCurso"
         >
           <ion-col size="8" class="ion-text-center">
-            <ion-card class="btn-inicio-bien">
-              <ion-card-header>
+            <ion-card class="btn-inicio-alerta">
+              <ion-card-header class="color-black">
                 <ion-card-subtitle> Siesta en curso </ion-card-subtitle>
                 <ion-card-title>
                   {{objSiestaEnCurso.hora | hora}}
@@ -42,7 +42,7 @@
                 <ion-card-subtitle> 10 minutos </ion-card-subtitle>
               </ion-card-header>
             </ion-card>
-            <ion-button (click)="btnFinalSiestaEnCurso()" color="tertiary">
+            <ion-button (click)="btnFinalSiestaEnCurso()" color="danger">
               <ion-icon slot="start" name="partly-sunny-outline"></ion-icon>
               <ion-text color="dark"> Detener Siesta </ion-text>
             </ion-button>
@@ -53,8 +53,8 @@
           *ngIf="objNocheEnCurso"
         >
           <ion-col size="8" class="ion-text-center">
-            <ion-card class="btn-inicio-bien">
-              <ion-card-header>
+            <ion-card class="btn-inicio-alerta">
+              <ion-card-header class="color-black">
                 <ion-card-subtitle> Noche en curso </ion-card-subtitle>
                 <ion-card-title>
                   {{objNocheEnCurso.hora | hora}}
@@ -63,7 +63,7 @@
                 <ion-card-subtitle> 10 minutos </ion-card-subtitle>
               </ion-card-header>
             </ion-card>
-            <ion-button (click)="btnFinalNocheEnCurso()" color="tertiary">
+            <ion-button (click)="btnFinalNocheEnCurso()" color="danger">
               <ion-icon slot="start" name="moon-outline"></ion-icon>
               <ion-text color="dark"> Detener Noche </ion-text>
             </ion-button>
@@ -74,7 +74,7 @@
           <ion-col size="10">
             <ion-accordion-group>
               <ion-accordion class="item-rounded">
-                <ion-item slot="header" color="medium">
+                <ion-item slot="header" class="bg-list-header">
                   <ion-icon slot="start" name="partly-sunny-outline"></ion-icon>
                   <ion-label> Historial Siesta </ion-label>
                 </ion-item>
@@ -83,8 +83,14 @@
                     slot="content"
                     *ngFor="let time of arrSiesta; let indx = index"
                   >
-                    <ion-item-sliding>
-                      <ion-item>
+                    <ion-item-sliding class="color-black">
+                      <ion-item
+                        button
+                        lines="full"
+                        detail="true"
+                        class="bg-item-acordeon"
+                        detail-icon="caret-forward-outline"
+                      >
                         <ion-label>
                           <ion-grid>
                             <ion-row class="ion-justify-content-center">
@@ -108,7 +114,7 @@
                           </ion-grid>
                         </ion-label>
                       </ion-item>
-                      <ion-item-options side="end">
+                      <ion-item-options side="end" class="color-white">
                         <ion-item-option color="danger">
                           Eliminar
                           <ion-icon slot="top" name="trash-outline"></ion-icon>
@@ -125,7 +131,7 @@
           <ion-col size="10">
             <ion-accordion-group>
               <ion-accordion class="item-rounded">
-                <ion-item slot="header" color="medium">
+                <ion-item slot="header" class="bg-list-header">
                   <ion-label>Historial Noche</ion-label>
                   <ion-icon slot="start" name="moon-outline"></ion-icon>
                 </ion-item>
@@ -134,8 +140,14 @@
                     slot="content"
                     *ngFor="let time of arrNoche; let indx = index"
                   >
-                    <ion-item-sliding>
-                      <ion-item>
+                    <ion-item-sliding class="color-black">
+                      <ion-item
+                        button
+                        lines="full"
+                        detail="true"
+                        class="bg-item-acordeon"
+                        detail-icon="caret-forward-outline"
+                      >
                         <ion-label>
                           <ion-grid>
                             <ion-row class="ion-justify-content-center">
@@ -159,7 +171,7 @@
                           </ion-grid>
                         </ion-label>
                       </ion-item>
-                      <ion-item-options side="end">
+                      <ion-item-options side="end" class="color-white">
                         <ion-item-option color="danger">
                           Eliminar
                           <ion-icon slot="top" name="trash-outline"></ion-icon>
