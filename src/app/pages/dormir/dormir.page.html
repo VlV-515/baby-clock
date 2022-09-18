@@ -83,7 +83,7 @@
                     slot="content"
                     *ngFor="let time of arrSiesta; let indx = index"
                   >
-                    <ion-item-sliding class="item-color-black">
+                    <ion-item-sliding>
                       <ion-item
                         button
                         lines="full"
@@ -140,7 +140,7 @@
                     slot="content"
                     *ngFor="let time of arrNoche; let indx = index"
                   >
-                    <ion-item-sliding class="item-color-black">
+                    <ion-item-sliding>
                       <ion-item
                         button
                         lines="full"
@@ -189,6 +189,12 @@
   </ion-content>
 
   <ng-template #limpio>
-    <div class="ion-padding" slot="content">SIN REGISTRO</div>
+    <div
+      class="ion-padding ion-text-center"
+      slot="content"
+      style="color: white !important"
+    >
+      SIN REGISTRO
+    </div>
   </ng-template>
 </ion-app>

@@ -2,70 +2,19 @@ import { Component } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { AlertasService } from 'src/app/shared/services/alertas.service';
 import { LocalStorageService } from 'src/app/shared/services/local-storage.service';
-export enum TipoDormir {
-  siesta = 'DormirSiesta',
-  noche = 'DormirNoche',
-  siestaEnCurso = 'DormirSiestaEnCurso',
-  nocheEnCurso = 'DormirNocheEnCurso',
-}
-export interface DormirModel {
-  inicio: DormirDetalleModel;
-  final?: DormirDetalleModel;
-}
-export interface DormirDetalleModel {
-  hora: string;
-  detalle?: string;
-}
+import {
+  DormirTipo,
+  DormirModel,
+  DormirDetalleModel,
+} from './interfaces/dormir.interface';
 @Component({
   selector: 'app-dormir',
   templateUrl: './dormir.page.html',
   styleUrls: ['./dormir.page.scss'],
 })
 export class DormirPage {
-  arrSiesta: DormirModel[] = [
-    {
-      inicio: {
-        hora: '08:00',
-        detalle: 'Siesta inicio',
-      },
-      final: {
-        hora: '10:00',
-        detalle: 'Siesta final',
-      },
-    },
-    {
-      inicio: {
-        hora: '12:00',
-        detalle: 'Detalle siesta inicio',
-      },
-      final: {
-        hora: '14:00',
-        detalle: 'Detalle siesta final',
-      },
-    },
-  ];
-  arrNoche: DormirModel[] = [
-    {
-      inicio: {
-        hora: '22:00',
-        detalle: 'Noche inicio',
-      },
-      final: {
-        hora: '06:00',
-        detalle: 'Noche final',
-      },
-    },
-    {
-      inicio: {
-        hora: '23:00',
-        detalle: 'Detalle noche inicio',
-      },
-      final: {
-        hora: '07:00',
-        detalle: 'Detalle noche final',
-      },
-    },
-  ];
+  arrSiesta: DormirModel[] = [];
+  arrNoche: DormirModel[] = [];
   objSiestaEnCurso: DormirDetalleModel = null;
   objNocheEnCurso: DormirDetalleModel = null;
   constructor(
@@ -83,97 +32,49 @@ export class DormirPage {
     const seguro = await this.alertaSvc.handlerConfirmAlert({
       message: '¿Estas seguro de iniciar la siesta?',
     });
-    if (!seguro) {
-      return;
-    }
-    const hora = this.getHora();
-    const obj: DormirDetalleModel = { hora };
-    this.objSiestaEnCurso = obj;
-    await this.lsSvc.setInLocalStorage(
-      TipoDormir.siestaEnCurso,
-      JSON.stringify(obj)
-    );
+    return seguro ? this.iniciarSiesta() : null;
   }
   public async btnFinalSiestaEnCurso(): Promise<void> {
     const seguro = await this.alertaSvc.handlerConfirmAlert({
       message: '¿Estas seguro de finalizar la siesta?',
     });
-    if (!seguro) {
-      return;
-    }
-    const detalle = await this.getDetalle(TipoDormir.siesta);
-    const hora = this.getHora();
-    const objSiesta: DormirModel = {
-      inicio: this.objSiestaEnCurso,
-      final: { hora, detalle },
-    };
-    this.arrSiesta.unshift(objSiesta);
-    this.objSiestaEnCurso = null;
-    await this.lsSvc.setInLocalStorage(
-      TipoDormir.siesta,
-      JSON.stringify(this.arrSiesta)
-    );
-    await this.lsSvc.setInLocalStorage(TipoDormir.siestaEnCurso, null);
+    return seguro ? this.finalizarSesion(DormirTipo.siesta) : null;
   }
   public async btnInicioNocheEnCurso(): Promise<void> {
     const seguro = await this.alertaSvc.handlerConfirmAlert({
       message: '¿Estas seguro de iniciar el sueño de noche?',
     });
-    if (!seguro) {
-      return;
-    }
-    const hora = this.getHora();
-    const obj: DormirDetalleModel = { hora };
-    this.objNocheEnCurso = obj;
-    await this.lsSvc.setInLocalStorage(
-      TipoDormir.nocheEnCurso,
-      JSON.stringify(obj)
-    );
+    return seguro ? this.iniciarNoche() : null;
   }
   public async btnFinalNocheEnCurso(): Promise<void> {
     const seguro = await this.alertaSvc.handlerConfirmAlert({
       message: '¿Estas seguro de finalizar el sueño de noche?',
     });
-    if (!seguro) {
-      return;
-    }
-    const detalle = await this.getDetalle(TipoDormir.noche);
-    const hora = this.getHora();
-    const objNoche: DormirModel = {
-      inicio: this.objNocheEnCurso,
-      final: { hora, detalle },
-    };
-    this.arrNoche.unshift(objNoche);
-    this.objNocheEnCurso = null;
-    await this.lsSvc.setInLocalStorage(
-      TipoDormir.noche,
-      JSON.stringify(this.arrNoche)
-    );
-    await this.lsSvc.setInLocalStorage(TipoDormir.nocheEnCurso, null);
+    return seguro ? this.finalizarSesion(DormirTipo.noche) : null;
   }
   //! PRIVADAS
   private async initDormir(): Promise<void> {
-    await this.getDormir(TipoDormir.siesta);
-    await this.getDormir(TipoDormir.noche);
-    await this.getDormir(TipoDormir.siestaEnCurso);
-    await this.getDormir(TipoDormir.nocheEnCurso);
+    await this.getDormir(DormirTipo.siesta);
+    await this.getDormir(DormirTipo.noche);
+    await this.getDormir(DormirTipo.siestaEnCurso);
+    await this.getDormir(DormirTipo.nocheEnCurso);
   }
-  private async getDormir(tipoDormir: TipoDormir): Promise<void> {
-    const dormir = await this.lsSvc.getFromLocalStorage(tipoDormir);
-    if (tipoDormir === TipoDormir.siestaEnCurso) {
+  private async getDormir(dormirTipo: DormirTipo): Promise<void> {
+    const dormir = await this.lsSvc.getFromLocalStorage(dormirTipo);
+    if (dormirTipo === DormirTipo.siestaEnCurso) {
       this.objSiestaEnCurso = dormir ? JSON.parse(dormir) : null;
       return;
     }
-    if (tipoDormir === TipoDormir.nocheEnCurso) {
+    if (dormirTipo === DormirTipo.nocheEnCurso) {
       this.objNocheEnCurso = dormir ? JSON.parse(dormir) : null;
       return;
     }
     const arr = dormir ? JSON.parse(dormir).slice(0, 5) : [];
-    if (tipoDormir === TipoDormir.siesta) {
+    if (dormirTipo === DormirTipo.siesta) {
       this.arrSiesta = arr;
       return;
     }
-    if (tipoDormir === TipoDormir.noche) {
+    if (dormirTipo === DormirTipo.noche) {
       this.arrNoche = arr;
       return;
     }
@@ -182,11 +83,11 @@ export class DormirPage {
     const today = new Date();
     return today.getHours() + ':' + today.getMinutes();
   }
-  private async getDetalle(tipoDormir: TipoDormir): Promise<string> {
+  private async getDetalle(dormirTipo: DormirTipo): Promise<string> {
     const alert = await this.alertController.create({
       mode: 'ios',
       header: `Detalles de la ${
-        tipoDormir === TipoDormir.siesta ? 'siesta' : 'noche'
+        dormirTipo === DormirTipo.siesta ? 'siesta' : 'noche'
       }`,
       inputs: [
         {
@@ -209,5 +110,55 @@ export class DormirPage {
     await alert.present();
     const { data } = await alert.onDidDismiss();
     return data.values.detalle;
+  }
+  private async iniciarSiesta(): Promise<void> {
+    const hora = this.getHora();
+    const obj: DormirDetalleModel = { hora };
+    this.objSiestaEnCurso = obj;
+    await this.lsSvc.setInLocalStorage(
+      DormirTipo.siestaEnCurso,
+      JSON.stringify(obj)
+    );
+  }
+  private async iniciarNoche(): Promise<void> {
+    const hora = this.getHora();
+    const obj: DormirDetalleModel = { hora };
+    this.objNocheEnCurso = obj;
+    await this.lsSvc.setInLocalStorage(
+      DormirTipo.nocheEnCurso,
+      JSON.stringify(obj)
+    );
+  }
+
+  private async finalizarSesion(dormirTipo: DormirTipo): Promise<void> {
+    const detalle: string = await this.getDetalle(dormirTipo);
+    const hora: string = this.getHora();
+    const inicio: DormirDetalleModel =
+      dormirTipo === DormirTipo.siesta
+        ? this.objSiestaEnCurso
+        : this.objNocheEnCurso;
+
+    const obj: DormirModel = {
+      inicio,
+      final: { hora, detalle },
+    };
+    if (dormirTipo === DormirTipo.siesta) {
+      this.arrSiesta.unshift(obj);
+      this.objSiestaEnCurso = null;
+      await this.lsSvc.setInLocalStorage(DormirTipo.siestaEnCurso, null);
+      await this.lsSvc.setInLocalStorage(
+        DormirTipo.siesta,
+        JSON.stringify(this.arrSiesta)
+      );
+    }
+    if (dormirTipo === DormirTipo.noche) {
+      this.arrNoche.unshift(obj);
+      this.objNocheEnCurso = null;
+      await this.lsSvc.setInLocalStorage(DormirTipo.nocheEnCurso, null);
+      await this.lsSvc.setInLocalStorage(
+        DormirTipo.noche,
+        JSON.stringify(this.arrNoche)
+      );
+    }
   }
 }
