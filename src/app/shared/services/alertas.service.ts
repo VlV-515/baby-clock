@@ -50,10 +50,13 @@ export class AlertasService {
     const { role } = await alert.onDidDismiss();
     return role === 'confirm';
   }
-  public async handlerMessageAlert({ message }): Promise<void> {
+  public async handlerMessageAlert({
+    message,
+    header = 'Información',
+  }): Promise<void> {
     const alert = await this.alertController.create({
       mode: 'ios',
-      header: 'Información',
+      header,
       message,
       buttons: [
         {
