@@ -51,6 +51,34 @@ export class DormirPage {
       message: detalle,
     });
   }
+  public async btnEliminarItem(
+    index: number,
+    dormirTipo: DormirTipo
+  ): Promise<void> {
+    const seguro = await this.alertaSvc.handlerConfirmAlert({
+      message: '¿Estas seguro de eliminar la sesión?',
+    });
+    if (seguro) {
+      if (dormirTipo === DormirTipo.siesta) {
+        this.arrSiesta.splice(index, 1);
+        this.lsSvc.setInLocalStorage(
+          DormirTipo.siesta,
+          JSON.stringify(this.arrSiesta)
+        );
+      }
+      if (dormirTipo === DormirTipo.noche) {
+        this.arrNoche.splice(index, 1);
+        this.lsSvc.setInLocalStorage(
+          DormirTipo.noche,
+          JSON.stringify(this.arrNoche)
+        );
+      }
+      this.alertaSvc.handlerToastMessagesAlert({
+        message: 'Sesión eliminada con exito',
+        color: 'danger',
+      });
+    }
+  }
   //! PRIVADAS
   private async initDormir(): Promise<void> {
     await this.getDormir(DormirTipo.siesta);
@@ -64,8 +92,8 @@ export class DormirPage {
     if (dormirTipo === DormirTipo.siestaEnCurso) {
       if (dormir) {
         this.objSiestaEnCurso = JSON.parse(dormir);
-        this.setDiferencia(DormirTipo.siesta);
-        this.alertaDormir();
+        this.setObjAlertaDormir(DormirTipo.siesta);
+        this.alertaSiesta();
         return;
       }
       this.objSiestaEnCurso = null;
@@ -75,7 +103,7 @@ export class DormirPage {
     if (dormirTipo === DormirTipo.nocheEnCurso) {
       if (dormir) {
         this.objNocheEnCurso = JSON.parse(dormir);
-        this.setDiferencia(DormirTipo.noche);
+        this.setObjAlertaDormir(DormirTipo.noche);
         return;
       }
       this.objNocheEnCurso = null;
@@ -124,13 +152,12 @@ export class DormirPage {
     const { data } = await alert.onDidDismiss();
     return data.values.detalle;
   }
-
   private async iniciarSesion(dormirTipo: DormirTipo): Promise<void> {
     const hora = this.getHora();
     const obj: DormirDetalleModel = { hora };
     if (dormirTipo === DormirTipo.siesta) {
       this.objSiestaEnCurso = obj;
-      this.setDiferencia(DormirTipo.siesta);
+      this.setObjAlertaDormir(DormirTipo.siesta);
       await this.lsSvc.setInLocalStorage(
         DormirTipo.siestaEnCurso,
         JSON.stringify(obj)
@@ -138,14 +165,13 @@ export class DormirPage {
     }
     if (dormirTipo === DormirTipo.noche) {
       this.objNocheEnCurso = obj;
-      this.setDiferencia(DormirTipo.noche);
+      this.setObjAlertaDormir(DormirTipo.noche);
       await this.lsSvc.setInLocalStorage(
         DormirTipo.nocheEnCurso,
         JSON.stringify(obj)
       );
     }
   }
-
   private async finalizarSesion(dormirTipo: DormirTipo): Promise<void> {
     const detalle: string = await this.getDetalle(dormirTipo);
     const hora: string = this.getHora();
@@ -177,9 +203,8 @@ export class DormirPage {
       );
     }
   }
-
-  private setDiferencia(dormirTipo: DormirTipo): void {
-    const { minutes, hours } = this.calcularDiferencia(dormirTipo);
+  private setObjAlertaDormir(dormirTipo: DormirTipo): void {
+    const { minutes, hours } = this.calcularTiempoTranscurrido(dormirTipo);
     if (hours >= 3) {
       this.objAlertaDormir = {
         header: 'Alerta',
@@ -214,8 +239,9 @@ export class DormirPage {
       };
     }
   }
-
-  private calcularDiferencia(dormirTipo: DormirTipo): DurationObjectUnits {
+  private calcularTiempoTranscurrido(
+    dormirTipo: DormirTipo
+  ): DurationObjectUnits {
     let objEnCurso: DormirDetalleModel;
     if (dormirTipo === DormirTipo.siesta) {
       objEnCurso = this.objSiestaEnCurso;
@@ -236,7 +262,7 @@ export class DormirPage {
     const diff = final.diff(inicio, ['minutes', 'hours']);
     return diff.toObject();
   }
-  private alertaDormir(): void {
+  private alertaSiesta(): void {
     this.alertaSvc.handlerMessageAlert({
       message: this.objAlertaDormir.mensaje,
       header: this.objAlertaDormir.header,

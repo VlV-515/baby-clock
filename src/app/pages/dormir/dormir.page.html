@@ -132,7 +132,7 @@
                         </ion-label>
                       </ion-item>
                       <ion-item-options side="end" class="item-color-white">
-                        <ion-item-option color="danger">
+                        <ion-item-option color="danger" (click)="btnEliminarItem(indx, objDormirTipo.siesta)">
                           Eliminar
                           <ion-icon slot="top" name="trash-outline"></ion-icon>
                         </ion-item-option>
@@ -190,7 +190,7 @@
                         </ion-label>
                       </ion-item>
                       <ion-item-options side="end" class="item-color-white">
-                        <ion-item-option color="danger">
+                        <ion-item-option color="danger" (click)="btnEliminarItem(indx, objDormirTipo.noche)">
                           Eliminar
                           <ion-icon slot="top" name="trash-outline"></ion-icon>
                         </ion-item-option>
