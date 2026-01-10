@@ -1,0 +1,364 @@
+<ion-app mode="ios">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="home"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Banco de Leche</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="cambiarVista()">
+          <ion-icon
+            slot="icon-only"
+            [name]="vistaActual === 'status' ? 'list-outline' : 'albums-outline'"
+          ></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="body">
+    <!-- Vista por Status -->
+    <ion-list class="bg-transparent" *ngIf="vistaActual === 'status'">
+      <ion-grid>
+        <!-- Disponibles -->
+        <ion-row
+          class="ion-text-center ion-align-items-center ion-justify-content-center"
+        >
+          <ion-col size="10">
+            <ion-accordion-group>
+              <ion-accordion value="first" class="select-pecho">
+                <ion-item slot="header" color="light">
+                  <ion-label>Disponibles</ion-label>
+                </ion-item>
+                <ng-container *ngIf="arrDisponibles.length > 0; else limpio">
+                  <div *ngFor="let registro of arrDisponibles" slot="content">
+                    <ion-item-sliding>
+                      <ion-item-options side="start">
+                        <ion-item-option
+                          (click)="marcarComoUsado(registro)"
+                          color="success"
+                        >
+                          Usar
+                          <ion-icon
+                            slot="top"
+                            name="checkmark-circle-outline"
+                          ></ion-icon>
+                        </ion-item-option>
+                      </ion-item-options>
+
+                      <ion-item (click)="verDetalle(registro)" button>
+                        <ion-label>
+                          <h2>{{registro.folio}}</h2>
+                          <p>{{getTipoTexto(registro.tipo)}}</p>
+                          <p>
+                            Vence: {{registro.fechaVencimiento}}
+                            {{registro.horaVencimiento}}
+                          </p>
+                        </ion-label>
+                      </ion-item>
+
+                      <ion-item-options side="end">
+                        <ion-item-option
+                          (click)="btnDeleteRegistro(registro)"
+                          color="danger"
+                        >
+                          Eliminar
+                          <ion-icon slot="top" name="trash-outline"></ion-icon>
+                        </ion-item-option>
+                      </ion-item-options>
+                    </ion-item-sliding>
+                  </div>
+                </ng-container>
+              </ion-accordion>
+            </ion-accordion-group>
+          </ion-col>
+        </ion-row>
+
+        <!-- Usados -->
+        <ion-row
+          class="ion-text-center ion-align-items-center ion-justify-content-center"
+        >
+          <ion-col size="10">
+            <ion-accordion-group>
+              <ion-accordion value="first" class="select-pecho">
+                <ion-item slot="header" color="light">
+                  <ion-label>Usados</ion-label>
+                </ion-item>
+                <ng-container *ngIf="arrUsados.length > 0; else limpio">
+                  <div *ngFor="let registro of arrUsados" slot="content">
+                    <ion-item-sliding>
+                      <ion-item (click)="verDetalle(registro)" button>
+                        <ion-label>
+                          <h2>{{registro.folio}}</h2>
+                          <p>{{getTipoTexto(registro.tipo)}}</p>
+                          <p>Usado</p>
+                        </ion-label>
+                      </ion-item>
+
+                      <ion-item-options side="end">
+                        <ion-item-option
+                          (click)="btnDeleteRegistro(registro)"
+                          color="danger"
+                        >
+                          Eliminar
+                          <ion-icon slot="top" name="trash-outline"></ion-icon>
+                        </ion-item-option>
+                      </ion-item-options>
+                    </ion-item-sliding>
+                  </div>
+                </ng-container>
+              </ion-accordion>
+            </ion-accordion-group>
+          </ion-col>
+        </ion-row>
+
+        <!-- Expirados -->
+        <ion-row
+          class="ion-text-center ion-align-items-center ion-justify-content-center"
+        >
+          <ion-col size="10">
+            <ion-accordion-group>
+              <ion-accordion value="first" class="select-pecho">
+                <ion-item slot="header" color="light">
+                  <ion-label>Expirados</ion-label>
+                </ion-item>
+                <ng-container *ngIf="arrExpirados.length > 0; else limpio">
+                  <div *ngFor="let registro of arrExpirados" slot="content">
+                    <ion-item-sliding>
+                      <ion-item (click)="verDetalle(registro)" button>
+                        <ion-label>
+                          <h2>{{registro.folio}}</h2>
+                          <p>{{getTipoTexto(registro.tipo)}}</p>
+                          <p style="color: red">VENCIDO</p>
+                        </ion-label>
+                      </ion-item>
+
+                      <ion-item-options side="end">
+                        <ion-item-option
+                          (click)="btnDeleteRegistro(registro)"
+                          color="danger"
+                        >
+                          Eliminar
+                          <ion-icon slot="top" name="trash-outline"></ion-icon>
+                        </ion-item-option>
+                      </ion-item-options>
+                    </ion-item-sliding>
+                  </div>
+                </ng-container>
+              </ion-accordion>
+            </ion-accordion-group>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-list>
+
+    <!-- Vista por Tipo -->
+    <ion-list class="bg-transparent" *ngIf="vistaActual === 'tipo'">
+      <ion-grid>
+        <!-- Ambiente -->
+        <ion-row
+          class="ion-text-center ion-align-items-center ion-justify-content-center"
+        >
+          <ion-col size="10">
+            <ion-accordion-group>
+              <ion-accordion value="first" class="select-pecho">
+                <ion-item slot="header" color="light">
+                  <ion-label>Ambiente</ion-label>
+                </ion-item>
+                <ng-container *ngIf="arrAmbiente.length > 0; else limpio">
+                  <div *ngFor="let registro of arrAmbiente" slot="content">
+                    <ion-item-sliding>
+                      <ion-item-options
+                        side="start"
+                        *ngIf="registro.status === 'disponible' && !estaVencido(registro)"
+                      >
+                        <ion-item-option
+                          (click)="marcarComoUsado(registro)"
+                          color="success"
+                        >
+                          Usar
+                          <ion-icon
+                            slot="top"
+                            name="checkmark-circle-outline"
+                          ></ion-icon>
+                        </ion-item-option>
+                      </ion-item-options>
+
+                      <ion-item (click)="verDetalle(registro)" button>
+                        <ion-label>
+                          <h2>Folio: {{registro.folio}}</h2>
+                          <p>
+                            Vence: {{registro.fechaVencimiento}}
+                            {{registro.horaVencimiento}}
+                          </p>
+                          <p *ngIf="estaVencido(registro)" style="color: red">
+                            VENCIDO
+                          </p>
+                          <p
+                            *ngIf="registro.status === 'usado'"
+                            style="color: gray"
+                          >
+                            USADO
+                          </p>
+                        </ion-label>
+                      </ion-item>
+
+                      <ion-item-options side="end">
+                        <ion-item-option
+                          (click)="btnDeleteRegistro(registro)"
+                          color="danger"
+                        >
+                          Eliminar
+                          <ion-icon slot="top" name="trash-outline"></ion-icon>
+                        </ion-item-option>
+                      </ion-item-options>
+                    </ion-item-sliding>
+                  </div>
+                </ng-container>
+              </ion-accordion>
+            </ion-accordion-group>
+          </ion-col>
+        </ion-row>
+
+        <!-- Refrigerador -->
+        <ion-row
+          class="ion-text-center ion-align-items-center ion-justify-content-center"
+        >
+          <ion-col size="10">
+            <ion-accordion-group>
+              <ion-accordion value="first" class="select-pecho">
+                <ion-item slot="header" color="light">
+                  <ion-label>Refrigerador</ion-label>
+                </ion-item>
+                <ng-container *ngIf="arrRefrigerador.length > 0; else limpio">
+                  <div *ngFor="let registro of arrRefrigerador" slot="content">
+                    <ion-item-sliding>
+                      <ion-item-options
+                        side="start"
+                        *ngIf="registro.status === 'disponible' && !estaVencido(registro)"
+                      >
+                        <ion-item-option
+                          (click)="marcarComoUsado(registro)"
+                          color="success"
+                        >
+                          Usar
+                          <ion-icon
+                            slot="top"
+                            name="checkmark-circle-outline"
+                          ></ion-icon>
+                        </ion-item-option>
+                      </ion-item-options>
+
+                      <ion-item (click)="verDetalle(registro)" button>
+                        <ion-label>
+                          <h2>Folio: {{registro.folio}}</h2>
+                          <p>
+                            Vence: {{registro.fechaVencimiento}}
+                            {{registro.horaVencimiento}}
+                          </p>
+                          <p *ngIf="estaVencido(registro)" style="color: red">
+                            VENCIDO
+                          </p>
+                          <p
+                            *ngIf="registro.status === 'usado'"
+                            style="color: gray"
+                          >
+                            USADO
+                          </p>
+                        </ion-label>
+                      </ion-item>
+
+                      <ion-item-options side="end">
+                        <ion-item-option
+                          (click)="btnDeleteRegistro(registro)"
+                          color="danger"
+                        >
+                          Eliminar
+                          <ion-icon slot="top" name="trash-outline"></ion-icon>
+                        </ion-item-option>
+                      </ion-item-options>
+                    </ion-item-sliding>
+                  </div>
+                </ng-container>
+              </ion-accordion>
+            </ion-accordion-group>
+          </ion-col>
+        </ion-row>
+
+        <!-- Congelador -->
+        <ion-row
+          class="ion-text-center ion-align-items-center ion-justify-content-center"
+        >
+          <ion-col size="10">
+            <ion-accordion-group>
+              <ion-accordion value="first" class="select-pecho">
+                <ion-item slot="header" color="light">
+                  <ion-label>Congelador</ion-label>
+                </ion-item>
+                <ng-container *ngIf="arrCongelador.length > 0; else limpio">
+                  <div *ngFor="let registro of arrCongelador" slot="content">
+                    <ion-item-sliding>
+                      <ion-item-options
+                        side="start"
+                        *ngIf="registro.status === 'disponible' && !estaVencido(registro)"
+                      >
+                        <ion-item-option
+                          (click)="marcarComoUsado(registro)"
+                          color="success"
+                        >
+                          Usar
+                          <ion-icon
+                            slot="top"
+                            name="checkmark-circle-outline"
+                          ></ion-icon>
+                        </ion-item-option>
+                      </ion-item-options>
+
+                      <ion-item (click)="verDetalle(registro)" button>
+                        <ion-label>
+                          <h2>Folio: {{registro.folio}}</h2>
+                          <p>
+                            Vence: {{registro.fechaVencimiento}}
+                            {{registro.horaVencimiento}}
+                          </p>
+                          <p *ngIf="estaVencido(registro)" style="color: red">
+                            VENCIDO
+                          </p>
+                          <p
+                            *ngIf="registro.status === 'usado'"
+                            style="color: gray"
+                          >
+                            USADO
+                          </p>
+                        </ion-label>
+                      </ion-item>
+
+                      <ion-item-options side="end">
+                        <ion-item-option
+                          (click)="btnDeleteRegistro(registro)"
+                          color="danger"
+                        >
+                          Eliminar
+                          <ion-icon slot="top" name="trash-outline"></ion-icon>
+                        </ion-item-option>
+                      </ion-item-options>
+                    </ion-item-sliding>
+                  </div>
+                </ng-container>
+              </ion-accordion>
+            </ion-accordion-group>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-list>
+
+    <ion-fab vertical="bottom" horizontal="center">
+      <ion-fab-button color="dark" class="btn-fav" (click)="btnAddBancoLeche()">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  </ion-content>
+  <ng-template #limpio>
+    <div class="ion-padding" slot="content">SIN REGISTRO</div>
+  </ng-template>
+</ion-app>
