@@ -268,42 +268,55 @@ export class DetalleLechePage implements OnInit {
       return;
     }
 
-    // 1. Calcular el tiempo restante en el almacenamiento actual
-    const ahora = DateTime.now();
-    const vencimiento = DateTime.fromISO(
-      `${this.registro.fechaVencimiento}T${this.registro.horaVencimiento}`
-    );
-    const horasRestantes = vencimiento.diff(ahora, 'hours').hours;
-
-    // 2. Obtener la duración del nuevo tipo de almacenamiento
-    const tipoAlmacenamiento = ALMACENAMIENTO_LECHE.find(
-      (t) => t.tipo === nuevoTipo
-    );
-    if (!tipoAlmacenamiento) {
+    // No permitir cambios si ya está en congelador
+    if (this.registro.tipo === 'congelador') {
       return;
     }
 
-    // 3. Sumar las horas restantes a la nueva duración
-    const nuevaDuracionTotal =
-      tipoAlmacenamiento.duracionHoras + horasRestantes;
+    // Validar flujo permitido
+    const flujoValido =
+      (this.registro.tipo === 'ambiente' &&
+        (nuevoTipo === 'refrigerador' || nuevoTipo === 'congelador')) ||
+      (this.registro.tipo === 'refrigerador' && nuevoTipo === 'congelador');
 
-    // 4. Calcular nueva fecha y hora de vencimiento
-    const nuevoVencimiento = ahora.plus({ hours: nuevaDuracionTotal });
+    if (!flujoValido) {
+      return;
+    }
 
-    // 5. Eliminar el registro del almacenamiento antiguo
+    const ahora = DateTime.now();
+
+    // 1. Calcular horas consumidas desde el inicio
+    const inicio = DateTime.fromISO(
+      `${this.registro.fechaRegistro}T${this.registro.horaRegistro}`
+    );
+    const horasConsumidas = Math.floor(ahora.diff(inicio, 'hours').hours);
+
+    // 2. Obtener duración del nuevo tipo
+    const tipoNuevo = ALMACENAMIENTO_LECHE.find((t) => t.tipo === nuevoTipo);
+    if (!tipoNuevo) {
+      return;
+    }
+
+    // 3. Nueva duración total (regla correcta)
+    const nuevaDuracionTotal = tipoNuevo.duracionHoras + horasConsumidas;
+
+    // 4. Nuevo vencimiento
+    const nuevoVencimiento = ahora.plus({
+      hours: nuevaDuracionTotal,
+    });
+
+    // 5. Eliminar del almacenamiento actual
     const resAntiguo = await this.lsSvc.getFromLocalStorage(this.registro.tipo);
     const registrosAntiguos: BancoLecheRegistro[] = resAntiguo
       ? JSON.parse(resAntiguo)
       : [];
-    const registrosFiltrados = registrosAntiguos.filter(
-      (r) => r.id !== this.registro.id
-    );
+
     await this.lsSvc.setInLocalStorage(
       this.registro.tipo,
-      JSON.stringify(registrosFiltrados)
+      JSON.stringify(registrosAntiguos.filter((r) => r.id !== this.registro.id))
     );
 
-    // 6. Crear el nuevo registro con el nuevo tipo
+    // 6. Crear nuevo registro
     const nuevoRegistro: BancoLecheRegistro = {
       ...this.registro,
       tipo: nuevoTipo,
@@ -312,7 +325,7 @@ export class DetalleLechePage implements OnInit {
       horaVencimiento: nuevoVencimiento.toFormat('HH:mm'),
     };
 
-    // 7. Guardar en el nuevo almacenamiento
+    // 7. Guardar en nuevo almacenamiento
     const resNuevo = await this.lsSvc.getFromLocalStorage(nuevoTipo);
     const registrosNuevos: BancoLecheRegistro[] = resNuevo
       ? JSON.parse(resNuevo)
