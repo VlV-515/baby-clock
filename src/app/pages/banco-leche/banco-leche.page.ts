@@ -176,7 +176,7 @@ export class BancoLechePage {
     }
   }
 
-  private async validarFolioUnico(folio: string): Promise<boolean> {
+  private async generarSiguienteFolio(): Promise<string> {
     const todosLosRegistros: BancoLecheRegistro[] = [];
 
     for (const tipo of this.optTipoAlmacenamiento) {
@@ -187,9 +187,25 @@ export class BancoLechePage {
       }
     }
 
-    return todosLosRegistros.some(
-      (r) => r.folio.toLowerCase() === folio.toLowerCase()
-    );
+    if (todosLosRegistros.length === 0) {
+      return 'BL-001';
+    }
+
+    // Extraer todos los números de los folios que siguen el formato BL-XXX
+    const numeros = todosLosRegistros
+      .map((r) => {
+        const match = r.folio.match(/^BL-(\d+)$/);
+        return match ? parseInt(match[1], 10) : 0;
+      })
+      .filter((num) => num > 0);
+
+    if (numeros.length === 0) {
+      return 'BL-001';
+    }
+
+    const maxNumero = Math.max(...numeros);
+    const siguienteNumero = maxNumero + 1;
+    return `BL-${siguienteNumero.toString().padStart(3, '0')}`;
   }
 
   private async seleccionarTipo() {
@@ -232,6 +248,7 @@ export class BancoLechePage {
     const today = DateTime.now();
     const time = today.toFormat('HH:mm');
     const fecha = today.toISODate();
+    const siguienteFolio = await this.generarSiguienteFolio();
 
     const alert = await this.alertController.create({
       backdropDismiss: false,
@@ -243,6 +260,8 @@ export class BancoLechePage {
           name: 'folio',
           type: 'text',
           placeholder: 'Folio (ej: BL-001)',
+          value: siguienteFolio,
+          disabled: true,
         },
         {
           name: 'fecha',
@@ -273,16 +292,6 @@ export class BancoLechePage {
             if (!data.folio || data.folio.trim() === '') {
               this.alertasSvc.handlerToastMessagesAlert({
                 message: 'El folio es requerido',
-                color: 'danger',
-              });
-              return false;
-            }
-
-            // Validar que el folio sea único
-            const folioExiste = await this.validarFolioUnico(data.folio);
-            if (folioExiste) {
-              this.alertasSvc.handlerToastMessagesAlert({
-                message: 'El folio ya existe. Por favor usa uno diferente.',
                 color: 'danger',
               });
               return false;
