@@ -146,9 +146,13 @@ export class BancoLechePage {
       ...this.arrCongelador,
     ];
 
-    this.arrDisponibles = todosLosRegistros.filter(
-      (r) => r.status === 'disponible' && !this.estaVencido(r)
-    );
+    this.arrDisponibles = todosLosRegistros
+      .filter((r) => r.status === 'disponible' && !this.estaVencido(r))
+      .sort((a, b) => {
+        const dateA = new Date(`${a.fechaVencimiento}T${a.horaVencimiento}`);
+        const dateB = new Date(`${b.fechaVencimiento}T${b.horaVencimiento}`);
+        return dateA.getTime() - dateB.getTime();
+      });
     this.arrUsados = todosLosRegistros.filter((r) => r.status === 'usado');
     this.arrExpirados = todosLosRegistros.filter(
       (r) => r.status === 'disponible' && this.estaVencido(r)
