@@ -217,6 +217,29 @@ export class DetalleLechePage implements OnInit {
     }
   }
 
+  getDuracionFormateada(): string {
+    if (!this.registro) {
+      return '';
+    }
+
+    const horas = this.registro.duracionHoras;
+
+    // Si son menos de 48 horas, mostrar en horas
+    if (horas < 48) {
+      return `${horas} hora${horas !== 1 ? 's' : ''}`;
+    }
+
+    // Si son menos de 720 horas (30 días), mostrar en días
+    if (horas < 720) {
+      const dias = Math.floor(horas / 24);
+      return `${dias} día${dias !== 1 ? 's' : ''}`;
+    }
+
+    // Si son 720 horas o más, mostrar en meses
+    const meses = Math.floor(horas / 720);
+    return `${meses} mes${meses !== 1 ? 'es' : ''}`;
+  }
+
   //* Private Methods
   private async actualizarStatus(
     nuevoStatus: 'disponible' | 'usado' | 'eliminado' | 'expirado'

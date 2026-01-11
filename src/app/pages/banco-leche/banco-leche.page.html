@@ -62,8 +62,9 @@
                           <h2>{{registro.folio}}</h2>
                           <p>{{getTipoTexto(registro.tipo)}}</p>
                           <p>
-                            Vence: {{registro.fechaVencimiento}}
-                            {{registro.horaVencimiento}}
+                            Vence: {{registro.fechaVencimiento | date:
+                            'dd/MM/yyyy' }} - {{registro.horaVencimiento |
+                            hora}}
                           </p>
                         </ion-label>
                       </ion-item>
@@ -284,8 +285,9 @@
                         <ion-label>
                           <h2>Folio: {{registro.folio}}</h2>
                           <p>
-                            Vence: {{registro.fechaVencimiento}}
-                            {{registro.horaVencimiento}}
+                            Vence: {{registro.fechaVencimiento | date:
+                            'dd/MM/yyyy' }} - {{registro.horaVencimiento |
+                            hora}}
                           </p>
                           <p *ngIf="estaVencido(registro)" style="color: red">
                             VENCIDO
@@ -349,8 +351,9 @@
                         <ion-label>
                           <h2>Folio: {{registro.folio}}</h2>
                           <p>
-                            Vence: {{registro.fechaVencimiento}}
-                            {{registro.horaVencimiento}}
+                            Vence: {{registro.fechaVencimiento | date:
+                            'dd/MM/yyyy' }} - {{registro.horaVencimiento |
+                            hora}}
                           </p>
                           <p *ngIf="estaVencido(registro)" style="color: red">
                             VENCIDO
