@@ -7,6 +7,12 @@
       <ion-title>Detalle de Leche</ion-title>
       <ion-buttons slot="end">
         <ion-button
+          *ngIf="registro?.status === 'disponible' && !estaVencido && registro?.tipo !== 'congelador'"
+          (click)="cambiarTipoAlmacenamiento()"
+          color="warning">
+          <ion-icon slot="icon-only" name="swap-horizontal-outline"></ion-icon>
+        </ion-button>
+        <ion-button
           *ngIf="registro?.status === 'disponible' && !estaVencido"
           (click)="utilizarLeche()">
           <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>

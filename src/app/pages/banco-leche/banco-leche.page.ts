@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, ViewChild } from '@angular/core';
 import { AlertController, IonList } from '@ionic/angular';
 import { Router } from '@angular/router';
@@ -57,6 +58,98 @@ export class BancoLechePage {
       color: 'success',
     });
     this.getInfoGeneral();
+  }
+
+  async cambiarTipoAlmacenamiento(registro: BancoLecheRegistro): Promise<void> {
+    this.ionList.closeSlidingItems();
+
+    // Validar que no esté en congelador (último nivel)
+    if (registro.tipo === 'congelador') {
+      this.alertasSvc.handlerToastMessagesAlert({
+        message: 'La leche en congelador no puede cambiar de tipo',
+        color: 'warning',
+      });
+      return;
+    }
+
+    // Validar que no esté vencido
+    if (this.estaVencido(registro)) {
+      this.alertasSvc.handlerToastMessagesAlert({
+        message:
+          'No se puede cambiar el tipo de almacenamiento de leche vencida',
+        color: 'danger',
+      });
+      return;
+    }
+
+    // Validar que esté disponible
+    if (registro.status !== 'disponible') {
+      this.alertasSvc.handlerToastMessagesAlert({
+        message: 'Solo se puede cambiar el tipo de leche disponible',
+        color: 'warning',
+      });
+      return;
+    }
+
+    // Crear opciones de radio según el tipo actual
+    const opcionesRadio: any[] = [];
+
+    if (registro.tipo === 'ambiente') {
+      opcionesRadio.push(
+        {
+          label: 'Refrigerador (≤ 4°C - 4 días)',
+          type: 'radio',
+          value: 'refrigerador',
+        },
+        {
+          label: 'Congelador (−18°C - 6 meses)',
+          type: 'radio',
+          value: 'congelador',
+        }
+      );
+    } else if (registro.tipo === 'refrigerador') {
+      opcionesRadio.push({
+        label: 'Congelador (−18°C - 6 meses)',
+        type: 'radio',
+        value: 'congelador',
+      });
+    }
+
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      mode: 'ios',
+      header: 'Cambiar tipo de almacenamiento',
+      subHeader: `Actual: ${this.getTipoTexto(registro.tipo)}`,
+      inputs: opcionesRadio,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'destructive',
+        },
+        {
+          text: 'Cambiar',
+          handler: async (nuevoTipo) => {
+            if (!nuevoTipo) {
+              this.alertasSvc.handlerToastMessagesAlert({
+                message: 'Debes seleccionar un tipo',
+                color: 'warning',
+              });
+              return false;
+            }
+
+            await this.cambiarTipo(registro, nuevoTipo);
+            this.alertasSvc.handlerToastMessagesAlert({
+              message: `Cambiado a ${this.getTipoTexto(nuevoTipo)}`,
+              color: 'success',
+            });
+            this.getInfoGeneral();
+            return true;
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 
   async btnDeleteRegistro(registro: BancoLecheRegistro): Promise<void> {
@@ -174,6 +267,66 @@ export class BancoLechePage {
         JSON.stringify(registros)
       );
     }
+  }
+
+  private async cambiarTipo(
+    registro: BancoLecheRegistro,
+    nuevoTipo: 'ambiente' | 'refrigerador' | 'congelador'
+  ): Promise<void> {
+    // 1. Calcular el tiempo restante en el almacenamiento actual
+    const ahora = DateTime.now();
+    const vencimiento = DateTime.fromISO(
+      `${registro.fechaVencimiento}T${registro.horaVencimiento}`
+    );
+    const horasRestantes = vencimiento.diff(ahora, 'hours').hours;
+
+    // 2. Obtener la duración del nuevo tipo de almacenamiento
+    const tipoAlmacenamiento = ALMACENAMIENTO_LECHE.find(
+      (t) => t.tipo === nuevoTipo
+    );
+    if (!tipoAlmacenamiento) {
+      return;
+    }
+
+    // 3. Sumar las horas restantes a la nueva duración
+    const nuevaDuracionTotal =
+      tipoAlmacenamiento.duracionHoras + horasRestantes;
+
+    // 4. Calcular nueva fecha y hora de vencimiento
+    const nuevoVencimiento = ahora.plus({ hours: nuevaDuracionTotal });
+
+    // 5. Eliminar el registro del almacenamiento antiguo
+    const resAntiguo = await this.lsSvc.getFromLocalStorage(registro.tipo);
+    const registrosAntiguos: BancoLecheRegistro[] = resAntiguo
+      ? JSON.parse(resAntiguo)
+      : [];
+    const registrosFiltrados = registrosAntiguos.filter(
+      (r) => r.id !== registro.id
+    );
+    await this.lsSvc.setInLocalStorage(
+      registro.tipo,
+      JSON.stringify(registrosFiltrados)
+    );
+
+    // 6. Crear el nuevo registro con el nuevo tipo
+    const nuevoRegistro: BancoLecheRegistro = {
+      ...registro,
+      tipo: nuevoTipo,
+      duracionHoras: nuevaDuracionTotal,
+      fechaVencimiento: nuevoVencimiento.toISODate()!,
+      horaVencimiento: nuevoVencimiento.toFormat('HH:mm'),
+    };
+
+    // 7. Guardar en el nuevo almacenamiento
+    const resNuevo = await this.lsSvc.getFromLocalStorage(nuevoTipo);
+    const registrosNuevos: BancoLecheRegistro[] = resNuevo
+      ? JSON.parse(resNuevo)
+      : [];
+    registrosNuevos.unshift(nuevoRegistro);
+    await this.lsSvc.setInLocalStorage(
+      nuevoTipo,
+      JSON.stringify(registrosNuevos)
+    );
   }
 
   private async generarSiguienteFolio(): Promise<string> {

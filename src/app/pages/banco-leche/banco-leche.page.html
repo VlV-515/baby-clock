@@ -44,6 +44,17 @@
                             name="checkmark-circle-outline"
                           ></ion-icon>
                         </ion-item-option>
+                        <ion-item-option
+                          *ngIf="registro.tipo !== 'congelador'"
+                          (click)="cambiarTipoAlmacenamiento(registro)"
+                          color="warning"
+                        >
+                          Cambiar
+                          <ion-icon
+                            slot="top"
+                            name="swap-horizontal-outline"
+                          ></ion-icon>
+                        </ion-item-option>
                       </ion-item-options>
 
                       <ion-item (click)="verDetalle(registro)" button>
@@ -182,6 +193,16 @@
                             name="checkmark-circle-outline"
                           ></ion-icon>
                         </ion-item-option>
+                        <ion-item-option
+                          (click)="cambiarTipoAlmacenamiento(registro)"
+                          color="warning"
+                        >
+                          Cambiar
+                          <ion-icon
+                            slot="top"
+                            name="swap-horizontal-outline"
+                          ></ion-icon>
+                        </ion-item-option>
                       </ion-item-options>
 
                       <ion-item (click)="verDetalle(registro)" button>
@@ -245,6 +266,16 @@
                           <ion-icon
                             slot="top"
                             name="checkmark-circle-outline"
+                          ></ion-icon>
+                        </ion-item-option>
+                        <ion-item-option
+                          (click)="cambiarTipoAlmacenamiento(registro)"
+                          color="warning"
+                        >
+                          Cambiar
+                          <ion-icon
+                            slot="top"
+                            name="swap-horizontal-outline"
                           ></ion-icon>
                         </ion-item-option>
                       </ion-item-options>
