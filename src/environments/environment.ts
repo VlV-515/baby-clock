@@ -11,6 +11,11 @@ export const environment = {
       icon: 'restaurant-outline',
     },
     {
+      nombre: 'banco de leche',
+      router: '/banco-leche',
+      icon: 'clipboard-outline',
+    },
+    {
       nombre: 'aseo',
       router: '/aseo',
       icon: 'fish-outline',

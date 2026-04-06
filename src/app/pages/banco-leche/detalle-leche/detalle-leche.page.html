@@ -1,0 +1,106 @@
+<ion-app mode="ios">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/banco-leche"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Detalle de Leche</ion-title>
+      <ion-buttons slot="end">
+        <ion-button
+          *ngIf="registro?.status === 'disponible' && !estaVencido && registro?.tipo !== 'congelador'"
+          (click)="cambiarTipoAlmacenamiento()"
+          color="warning"
+        >
+          <ion-icon slot="icon-only" name="swap-horizontal-outline"></ion-icon>
+        </ion-button>
+        <ion-button
+          *ngIf="registro?.status === 'disponible' && !estaVencido"
+          (click)="utilizarLeche()"
+        >
+          <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
+        </ion-button>
+        <ion-button
+          *ngIf="registro?.status !== 'eliminado'"
+          (click)="eliminarLeche()"
+          color="danger"
+        >
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="body" *ngIf="registro">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{registro.folio}}</ion-card-title>
+        <ion-card-subtitle
+          >{{getTipoTexto()}} - {{getTemperatura()}}</ion-card-subtitle
+        >
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-list>
+          <ion-item>
+            <ion-icon name="calendar-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h3>Fecha de Registro</h3>
+              <p>{{registro.fechaRegistro | date: 'dd/MM/yyyy'}}</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon name="time-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h3>Hora de Extracción</h3>
+              <p>{{registro.horaRegistro | hora}}</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon name="calendar-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h3>Fecha de Vencimiento</h3>
+              <p>{{registro.fechaVencimiento | date: 'dd/MM/yyyy'}}</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon name="time-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h3>Hora de Vencimiento</h3>
+              <p>{{registro.horaVencimiento | hora}}</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon name="hourglass-outline" slot="start"></ion-icon>
+            <ion-label>
+              <h3>Duración Máxima</h3>
+              <p>{{getDuracionFormateada()}}</p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item [color]="estaVencido ? 'danger' : 'success'">
+            <ion-icon
+              [name]="estaVencido ? 'close-circle-outline' : 'checkmark-circle-outline'"
+              slot="start"
+            ></ion-icon>
+            <ion-label>
+              <h3>Tiempo Restante</h3>
+              <p><strong>{{tiempoRestante}}</strong></p>
+            </ion-label>
+          </ion-item>
+
+          <ion-item *ngIf="registro.descripcion">
+            <ion-icon name="document-text-outline" slot="start"></ion-icon>
+            <ion-label class="ion-text-wrap">
+              <h3>Descripción</h3>
+              <p>{{registro.descripcion}}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </ion-content>
+</ion-app>

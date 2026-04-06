@@ -9,7 +9,17 @@ const routes: Routes = [
   },
   {
     path: 'lactancia',
-    loadChildren: () => import('./pages/lactancia/lactancia.module').then( m => m.LactanciaPageModule)
+    loadChildren: () =>
+      import('./pages/lactancia/lactancia.module').then(
+        (m) => m.LactanciaPageModule
+      ),
+  },
+  {
+    path: 'banco-leche',
+    loadChildren: () =>
+      import('./pages/banco-leche/banco-leche.module').then(
+        (m) => m.BancoLechePageModule
+      ),
   },
   {
     path: '',
@@ -18,11 +28,20 @@ const routes: Routes = [
   },
   {
     path: 'aseo',
-    loadChildren: () => import('./pages/aseo/aseo.module').then( m => m.AseoPageModule)
+    loadChildren: () =>
+      import('./pages/aseo/aseo.module').then((m) => m.AseoPageModule),
   },
   {
     path: 'dormir',
-    loadChildren: () => import('./pages/dormir/dormir.module').then( m => m.DormirPageModule)
+    loadChildren: () =>
+      import('./pages/dormir/dormir.module').then((m) => m.DormirPageModule),
+  },
+  {
+    path: 'banco-leche',
+    loadChildren: () =>
+      import('./pages/banco-leche/banco-leche.module').then(
+        (m) => m.BancoLechePageModule
+      ),
   },
 ];
 
